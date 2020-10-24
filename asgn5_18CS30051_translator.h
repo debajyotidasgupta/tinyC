@@ -1,11 +1,11 @@
 /**
  * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6#gmail.com]
- * 			  Siba Smarak Panigrahi (18CS10069)	[sibasmarak.p@gmail.com]
+ *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
  * Language : C++14
- * Desc		: header file for the translation statements
- * Date 	: 24.10.2020
- * Project	: TinyC
- * Course	: CS39003 Compilers Laboratory
+ * Desc     : header file for the translation statements
+ * Date     : 24.10.2020
+ * Project  : TinyC
+ * Course   : CS39003 Compilers Laboratory
  */
 
 #ifndef TRANSLATOR
@@ -21,8 +21,8 @@ using namespace std;
 
 #define CHAR_SIZE 		    1
 #define INT_SIZE  		    4
-#define DOUBLE_SIZE		    8
-#define POINTER_SIZE		4
+#define DOUBLE_SIZE         8
+#define POINTER_SIZE        4
 
 extern  char* yytext;
 extern  int yyparse();
@@ -30,30 +30,30 @@ extern  int yyparse();
 //--------------------------------------------------//
 //                  Class Declarations              //
 //--------------------------------------------------//
-class quad;																			// Element in quad array
-class symElem;																		// Element in a symbol table
-class symType;																		// Type of the Element (in a symbol table)
-class quadArray;																	// Array of quads
-class symTable;																		// Symbol Table
+class quad;                                                                         // Element in quad array
+class symElem;                                                                      // Element in a symbol table
+class symType;                                                                      // Type of the Element (in a symbol table)
+class quadArray;                                                                    // Array of quads
+class symTable;                                                                     // Symbol Table
 
 
 //----------------------------------------------//
 //              global variables                //
 //----------------------------------------------//
-extern symTable* table;																// Current Symbol Table
-extern symTable* globalTable;														// Global Symbol Table
-extern quadArray q;																	// Array of Quads
-extern symElem* currentSymbol;														// Pointer to just encountered symbol
+extern symTable* table;                                                              // Current Symbol Table
+extern symTable* globalTable;                                                        // Global Symbol Table
+extern quadArray q;                                                                  // Array of Quads
+extern symElem* currentSymbol;                                                       // Pointer to just encountered symbol
 
 //----------------------------------------------//
 //     Defination of the expression type        //
 //----------------------------------------------//
 struct expression {
-    string type; 																	// Storing expression type
-    symElem* ptr;																	// Pointer to the symbol in the symbol table entry
-    vector<int> truelist;															// list of the quads that exit on the true statement for Boolean Expression
-    vector<int> falselist;															// list of the quads that exit on the false statement for Boolean Expression
-    vector<int> nextlist;															// nextlist of the dangling exit statements
+    string type; 			                                                         // Storing expression type
+    symElem* ptr;			                                                         // Pointer to the symbol in the symbol table entry
+    vector<int> truelist;	                                                         // list of the quads that exit on the true statement for Boolean Expression
+    vector<int> falselist;	                                                         // list of the quads that exit on the false statement for Boolean Expression
+    vector<int> nextlist;	                                                         // nextlist of the dangling exit statements
 };
 
 //--------------------------------------------------//
