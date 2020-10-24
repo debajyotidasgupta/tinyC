@@ -38,7 +38,7 @@ class symTable;																		// Symbol Table
 
 
 //----------------------------------------------//
-//				global variables				//
+//              global variables                //
 //----------------------------------------------//
 extern symTable* table;																// Current Symbol Table
 extern symTable* globalTable;														// Global Symbol Table
@@ -46,7 +46,7 @@ extern quadArray q;																	// Array of Quads
 extern symElem* currentSymbol;														// Pointer to just encountered symbol
 
 //----------------------------------------------//
-//		Defination of the expression type		//
+//     Defination of the expression type        //
 //----------------------------------------------//
 struct expression {
     string type; 																	// Storing expression type
@@ -57,7 +57,7 @@ struct expression {
 };
 
 //--------------------------------------------------//
-//		Defination of the struct of quad element	//
+//      Defination of the struct of quad element    //
 //--------------------------------------------------//
 
 class quad {
@@ -72,7 +72,7 @@ public:
 
 
 //------------------------------------------------------//
-//			Class defination for the Symbol Table		//
+//          Class defination for the Symbol Table       //
 //------------------------------------------------------//
 class symTable {
 public:
@@ -87,7 +87,7 @@ public:
 };
 
 //--------------------------------------------------//
-//		Defination of the type of symbol			//
+//      Defination of the type of symbol            //
 //--------------------------------------------------//
 class symType {
 public:
@@ -98,7 +98,7 @@ public:
 };
 
 //----------------------------------------------------------------------//
-//		Defination of structure of each element of the symbol table		//
+//      Defination of structure of each element of the symbol table     //
 //----------------------------------------------------------------------//
 class symElem {
 public:
@@ -114,7 +114,7 @@ public:
 };
 
 //----------------------------------------------------------//
-//			Defination of the quad array type				//
+//          Defination of the quad array type               //
 //----------------------------------------------------------//
 class quadArray {
 public:
@@ -123,14 +123,14 @@ public:
 };
 
 //--------------------------------------------------------------//
-//			Defination of statements with dangling exits		//
+//          Defination of statements with dangling exits        //
 //--------------------------------------------------------------//
 struct statement {
     vector<int> nextlist;															// Nextlist for statement
 };
 
 //--------------------------------------------------------------//
-//			Attributes of the array type element				//
+//          Attributes of the array type element                //
 //--------------------------------------------------------------//
 struct array {
     string cat;
@@ -140,14 +140,14 @@ struct array {
 };
 
 //------------------------------------------------------------------//
-//			Overloaded emit function used by the parser				//
+//          Overloaded emit function used by the parser             //
 //------------------------------------------------------------------//
 void emit(string op, string result, int arg1, string arg2 = "");		  			//emits for adding quads to quadArray (arg1 is int)
 void emit(string op, string result, float arg1, string arg2 = "");        			//emits for adding quads to quadArray (arg1 is float)
 void emit(string op, string result, string arg1="", string arg2 = "");    			//emits for adding quads to quadArray
 
 //----------------------------------------------------------------------//
-//			Other global functions required for TAC	generation			//
+//          Other global functions required for TAC generation          //
 //----------------------------------------------------------------------//
 symElem* conv (symElem*, string);													// TAC for Type conversion in program
 bool typecheck(symElem* &s1, symElem* &s2);											// Checks if two symbols have same type
