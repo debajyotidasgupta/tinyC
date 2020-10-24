@@ -28,7 +28,7 @@ extern  char* yytext;
 extern  int yyparse();
 
 //--------------------------------------------------//
-//					Class Declarations				//
+//                  Class Declarations              //
 //--------------------------------------------------//
 class quad;																			// Element in quad array
 class symElem;																		// Element in a symbol table
@@ -49,11 +49,11 @@ extern symElem* currentSymbol;														// Pointer to just encountered symbo
 //		Defination of the expression type		//
 //----------------------------------------------//
 struct expression {
-	string type; 																	// Storing expression type
-	symElem* ptr;																	// Pointer to the symbol in the symbol table entry
-	vector<int> truelist;															// list of the quads that exit on the true statement for Boolean Expression 
-	vector<int> falselist;															// list of the quads that exit on the false statement for Boolean Expression
-	vector<int> nextlist;															// nextlist of the dangling exit statements
+    string type; 																	// Storing expression type
+    symElem* ptr;																	// Pointer to the symbol in the symbol table entry
+    vector<int> truelist;															// list of the quads that exit on the true statement for Boolean Expression
+    vector<int> falselist;															// list of the quads that exit on the false statement for Boolean Expression
+    vector<int> nextlist;															// nextlist of the dangling exit statements
 };
 
 //--------------------------------------------------//
@@ -62,12 +62,12 @@ struct expression {
 
 class quad {
 public:
-	string op;																		// Operator
-	string arg1;																	// Argument 1
-	string arg2;																	// Argument 2
-	string result;																	// Result
-	void print();																	// Print Quad
-	quad (string result, string op, string arg1, string arg2 = "");					//constructors
+    string op;																		// Operator
+    string arg1;																	// Argument 1
+    string arg2;																	// Argument 2
+    string result;																	// Result
+    void print();																	// Print Quad
+    quad (string result, string op, string arg1, string arg2 = "");					//constructors
 };
 
 
@@ -76,14 +76,14 @@ public:
 //------------------------------------------------------//
 class symTable {
 public:
-	string name;																	// Name of Table
-	vector<symElem> table; 															// The table of symbols
-	symTable* parent;																// Immediate parent of the symbol table
+    string name;																	// Name of Table
+    vector<symElem> table; 															// The table of symbols
+    symTable* parent;																// Immediate parent of the symbol table
 
-	symTable (string name="NULL");													// constructor of the symbol table
-	symElem* lookup (string name);													// Lookup for a symbol in symbol table
-	void print();					            									// Print the symbol table
-	void update();						        									// Update different entries of symbol table
+    symTable (string name="NULL");													// constructor of the symbol table
+    symElem* lookup (string name);													// Lookup for a symbol in symbol table
+    void print();					            									// Print the symbol table
+    void update();						        									// Update different entries of symbol table
 };
 
 //--------------------------------------------------//
@@ -91,10 +91,10 @@ public:
 //--------------------------------------------------//
 class symType {
 public:
-	string type;																	// Type of the element
-	int width;																		// Size of array / number of elements (in case of arrays)
-	symType* ptr;																	// pointer to type of the array or pointer for pinter type, 1D and 2D arrays
-	symType(string type, symType* ptr = NULL, int width = 1);						// Constructor
+    string type;																	// Type of the element
+    int width;																		// Size of array / number of elements (in case of arrays)
+    symType* ptr;																	// pointer to type of the array or pointer for pinter type, 1D and 2D arrays
+    symType(string type, symType* ptr = NULL, int width = 1);						// Constructor
 };
 
 //----------------------------------------------------------------------//
@@ -102,15 +102,15 @@ public:
 //----------------------------------------------------------------------//
 class symElem {
 public:
-	string name;																	// Name of the symbol
-	symType *type;																	// Type of the Symbol
-	string initial_value;															// Symbol initial valus (if any)
-	int size;																		// Size of the symbol
-	int offset;																		// Offset of symbol
-	symTable* nested;																// Pointer to nested symbol table
+    string name;																	// Name of the symbol
+    symType *type;																	// Type of the Symbol
+    string initial_value;															// Symbol initial valus (if any)
+    int size;																		// Size of the symbol
+    int offset;																		// Offset of symbol
+    symTable* nested;																// Pointer to nested symbol table
 
-	symElem (string name, string t, symType* ptr = NULL, int width = 0);	 		//constructor declaration
-	symElem* update(symType *t); 													// A method to update different fields of an existing entry.
+    symElem (string name, string t, symType* ptr = NULL, int width = 0);	 		//constructor declaration
+    symElem* update(symType *t); 													// A method to update different fields of an existing entry.
 };
 
 //----------------------------------------------------------//
@@ -118,25 +118,25 @@ public:
 //----------------------------------------------------------//
 class quadArray {
 public:
-	vector <quad> array; 		                									// Array of quad elements
-	void print ();																	// Print the quad array
+    vector <quad> array; 		                									// Array of quad elements
+    void print ();																	// Print the quad array
 };
 
 //--------------------------------------------------------------//
 //			Defination of statements with dangling exits		//
 //--------------------------------------------------------------//
 struct statement {
-	vector<int> nextlist;															// Nextlist for statement
+    vector<int> nextlist;															// Nextlist for statement
 };
 
 //--------------------------------------------------------------//
 //			Attributes of the array type element				//
 //--------------------------------------------------------------//
 struct array {
-	string cat;
-	symElem* ptr;																	// Temporary used for computing array address
-	symElem* array;																	// Pointer to symbol table
-	symType* type;																	// type of the subarray generated
+    string cat;
+    symElem* ptr;																	// Temporary used for computing array address
+    symElem* array;																	// Pointer to symbol table
+    symType* type;																	// type of the subarray generated
 };
 
 //------------------------------------------------------------------//
