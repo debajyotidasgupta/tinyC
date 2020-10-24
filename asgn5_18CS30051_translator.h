@@ -19,8 +19,8 @@
 #include <algorithm>
 using namespace std;
 
-#define CHAR_SIZE 		    1
-#define INT_SIZE  		    4
+#define CHAR_SIZE           1
+#define INT_SIZE            4
 #define DOUBLE_SIZE         8
 #define POINTER_SIZE        4
 
@@ -49,11 +49,11 @@ extern symElem* currentSymbol;                                                  
 //     Defination of the expression type        //
 //----------------------------------------------//
 struct expression {
-    string type; 			                                                         // Storing expression type
-    symElem* ptr;			                                                         // Pointer to the symbol in the symbol table entry
-    vector<int> truelist;	                                                         // list of the quads that exit on the true statement for Boolean Expression
-    vector<int> falselist;	                                                         // list of the quads that exit on the false statement for Boolean Expression
-    vector<int> nextlist;	                                                         // nextlist of the dangling exit statements
+    string type;                                                                     // Storing expression type
+    symElem* ptr;                                                                    // Pointer to the symbol in the symbol table entry
+    vector<int> truelist;                                                            // list of the quads that exit on the true statement for Boolean Expression
+    vector<int> falselist;                                                           // list of the quads that exit on the false statement for Boolean Expression
+    vector<int> nextlist;                                                            // nextlist of the dangling exit statements
 };
 
 //--------------------------------------------------//
@@ -62,12 +62,12 @@ struct expression {
 
 class quad {
 public:
-    string op;																		// Operator
-    string arg1;																	// Argument 1
-    string arg2;																	// Argument 2
-    string result;																	// Result
-    void print();																	// Print Quad
-    quad (string result, string op, string arg1, string arg2 = "");					//constructors
+    string op;                                                                        // Operator
+    string arg1;                                                                      // Argument 1
+    string arg2;                                                                      // Argument 2
+    string result;                                                                    // Result
+    void print();                                                                     // Print Quad
+    quad (string result, string op, string arg1, string arg2 = "");                   //constructors
 };
 
 
@@ -76,14 +76,14 @@ public:
 //------------------------------------------------------//
 class symTable {
 public:
-    string name;																	// Name of Table
-    vector<symElem> table; 															// The table of symbols
-    symTable* parent;																// Immediate parent of the symbol table
+    string name;                                                                     // Name of Table
+    vector<symElem> table;                                                           // The table of symbols
+    symTable* parent;                                                                // Immediate parent of the symbol table
 
-    symTable (string name="NULL");													// constructor of the symbol table
-    symElem* lookup (string name);													// Lookup for a symbol in symbol table
-    void print();					            									// Print the symbol table
-    void update();						        									// Update different entries of symbol table
+    symTable (string name="NULL");                                                   // constructor of the symbol table
+    symElem* lookup (string name);                                                   // Lookup for a symbol in symbol table
+    void print();                                                                    // Print the symbol table
+    void update();                                                                   // Update different entries of symbol table
 };
 
 //--------------------------------------------------//
