@@ -1,6 +1,6 @@
 all:
-	bison -dtv asgn5_18CS30051.y
 	flex asgn5_18CS30051.l
+	bison -dtv asgn5_18CS30051.y
 	gcc -c lex.yy.c
 	gcc -c asgn5_18CS30051.tab.c
 	g++ -c asgn5_18CS30051_translator.h
