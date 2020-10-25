@@ -74,45 +74,157 @@ void yyerror(const char*);
 %%
 
 constant: INTEGER_CONST
-        { printf("constant -> integer_constant\n"); }
+        { 
+                printf("constant -> integer_constant\n"); 
+                $$ = gentemp(new symType("INTEGER"), to_string($1));
+		emit("EQUAL", $$->name, to_string($1));
+        }
         | FLOAT_CONST
-        { printf("constant -> float_constant\n"); }
+        { 
+                printf("constant -> float_constant\n");
+                $$ = gentemp(new symtype("DOUBLE"), to_string($1));
+		emit("EQUAL", $$->name, to_string($1));
+        }
         | CHAR_CONST
-        { printf("constant -> character_constant\n"); }
+        { 
+                printf("constant -> character_constant\n"); 
+                $$ = gentemp(new symtype("CHAR"), $1);
+		emit("EQUAL", $$->name, to_string($1));
+        }
         ;
 
 primary_expression: IDENTIFIER
-                  { printf("primary_expression -> identifier\n"); }
-                  | constant
-                  { printf("primary_expression -> constant\n"); }
-                  | STRING
-                  { printf("primary_expression -> string\n"); }
-                  | '(' expression ')'
-                  { printf("primary_expression -> ( expression )\n"); }
-                  ;
+                { 
+                    $$ = new expression();
+                    $$->ptr = $1;
+                    $$->type = "NONBOOL";
+                    printf("primary_expression -> identifier\n"); 
+                }
+                | constant
+				{ 
+                    $$ = new expression();
+		        	$$->ptr = $1;
+                    printf("primary_expression -> constant\n"); 
+                }
+                | STRING
+                { 
+                    $$ = new expression();
+					symType* tmp = new symType("PTR");
+					$$->ptr = gentemp(tmp, $1);
+					$$->ptr->type->ptr = new symType("CHAR");
+					printf("primary_expression -> string\n"); 
+                }
+                | '(' expression ')'
+                {
+                    $$ = $2; 
+                    printf("primary_expression -> ( expression )\n"); 
+                }
+                ;
 
 postfix_expression: primary_expression
-                  { printf("postfix_expression -> primary_expression\n"); }
-                  | postfix_expression '[' expression ']'
-                  { printf("postfix_expression -> postfix_expression [ expression ]\n"); }
-                  | postfix_expression '(' argument_expression_list_opt ')'
-                  { printf("postfix_expression -> postfix_expression ( argument_expression_list_opt )\n"); }
-                  | postfix_expression '.' IDENTIFIER
-                  { printf("postfix_expression -> postfix_expression . IDENTIFIER\n"); }
-                  | postfix_expression ARROW IDENTIFIER
-                  { printf("postfix_expression -> postfix_expression -> IDENTIFIER\n"); }
-                  | postfix_expression PP
-                  { printf("postfix_expression -> postfix_expression ++\n"); }
-                  | postfix_expression MM
-                  { printf("postfix_expression -> postfix_expression --\n"); }
-                  | '(' type_name ')' '{' initializer_list '}'
-                  { printf("postfix_expression -> ( type_name ) { initializer_list }\n"); }
-                  | '(' type_name ')' '{' initializer_list ',' '}'
-                  { printf("postfix_expression -> ( type_name ) { initializer_list , }\n"); }
-                  ;
+                { 
+                    printf("postfix_expression -> primary_expression\n");
+                    $$ = new array ();
+					$$->array = $1->ptr;
+					$$->loc = $$->array;
+					$$->type = $1->ptr->type; 
+                }
+                | postfix_expression '[' expression ']'
+                { 
+                        printf("postfix_expression -> postfix_expression [ expression ]\n"); 
+                        $$ = new array();
+                        $$->array = $1->ptr;					// copy the base
+                        $$->type = $1->type->ptr;				// type = type of element
+                        $$->ptr = gentemp(new symtype("INTEGER"));		// store computed address
+                        
+                        // New address = (if only) already computed + $3 * new width
+						
+                        if ($1->cat=="ARR") 
+						{						
+								// if already computed
+                                sym* t = gentemp(new symType("INTEGER"));
+                                stringstream strs;
+                                strs << size_type($$->type);
+                                string temp_str = strs.str();
+                                char* intStr = (char*) temp_str.c_str();
+                                string str = string(intStr);				
+                                emit ("MULT", t->name, $3->ptr->name, str);
+                                emit ("ADD", $$->ptr->name, $1->ptr->name, t->name);
+                        }
+                        else 
+						{
+                                stringstream strs;
+                                strs << size_type($$->type);
+                                string temp_str = strs.str();
+                                char* intStr1 = (char*) temp_str.c_str();
+                                string str1 = string(intStr1);		
+                                emit("MULT", $$->ptr->name, $3->ptr->name, str1);
+                        }
+
+                        // Mark that it contains array address and first time computation is done
+                        $$->cat = "ARR";
+                }
+                | postfix_expression '(' argument_expression_list_opt ')'
+                { 
+                        printf("postfix_expression -> postfix_expression ( argument_expression_list_opt )\n");
+                        $$ = new array();
+                        $$->array = gentemp($1->type);
+                        stringstream strs;
+                        strs << $3;
+                        string temp_str = strs.str();
+                        char* intStr = (char*) temp_str.c_str();
+                        string str = string(intStr);		
+                        emit("CALL", $$->array->name, $1->array->name, str);
+                }
+                | postfix_expression '.' IDENTIFIER
+                { printf("postfix_expression -> postfix_expression . IDENTIFIER\n"); }
+                | postfix_expression ARROW IDENTIFIER
+                { printf("postfix_expression -> postfix_expression -> IDENTIFIER\n"); }
+                | postfix_expression PP
+                { 
+                    printf("postfix_expression -> postfix_expression ++\n");
+                    $$ = new array();
+
+                    // copy $1 to $$
+                    $$->array = gentemp($1->array->type);
+                    emit ("EQUAL", $$->array->name, $1->array->name);
+					// Increment $1
+                    emit ("ADD", $1->array->name, $1->array->name, "1");
+                }
+                | postfix_expression MM
+                { 
+                    printf("postfix_expression -> postfix_expression --\n");
+                    $$ = new array();
+
+                    // copy $1 to $$
+                    $$->array = gentemp($1->array->type);
+                    emit ("EQUAL", $$->array->name, $1->array->name);
+					// Increment $1
+                    emit ("SUB", $1->array->name, $1->array->name, "1");
+                }
+                | '(' type_name ')' '{' initializer_list '}'
+                { 
+					printf("postfix_expression -> ( type_name ) { initializer_list }\n"); 
+					$$ = new array();
+					$$->array = gentemp(new symtype("INTEGER"));
+					$$->ptr = gentemp(new symtype("INTEGER"));
+				}
+                | '(' type_name ')' '{' initializer_list ',' '}'
+                { 
+					printf("postfix_expression -> ( type_name ) { initializer_list , }\n"); 
+					$$ = new array();
+					$$->array = gentemp(new symtype("INTEGER"));
+					$$->ptr = gentemp(new symtype("INTEGER"));
+				}
+                ;
 
 argument_expression_list_opt: argument_expression_list
-                            { printf("argument_expression_list_opt -> argument_expression_list\n"); }
+                            {   printf("argument_expression_list_opt -> argument_expression_list\n"); 
+                                $$ = new array();
+
+                                // copy $1 to $$
+                                $$->array = gentemp($1->array->type);
+                            }
                             | %empty  
                             { printf("argument_expression_list_opt -> %%empty\n"); }
                             ;
