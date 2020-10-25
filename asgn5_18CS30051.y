@@ -1,7 +1,7 @@
 %{ /* C Declarations and Definitions */
 #include <stdio.h>
-extern int yylex();
 extern int line;
+extern int yylex();
 extern char* yytext;
 void yyerror(const char*);
 %}
@@ -547,7 +547,7 @@ selection_statement: IF '(' expression ')' statement
                    { printf("selection_statement -> SWITCH ( expression ) statement\n"); }
                    ;
 
-iteration_statement: WHILE '(' M expression ')' statement
+iteration_statement: WHILE '(' expression ')' statement
                    { printf("iteration_statement -> WHILE ( expression ) statement\n"); }
                    | DO statement WHILE '(' expression ')' ';'
                    { printf("iteration_statement -> DO statement WHILE ( expression ) ;\n"); }
