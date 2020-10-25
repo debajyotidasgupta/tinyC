@@ -37,11 +37,11 @@ symElem* symTable::lookup(string _name){                                       /
 void symTable::print(){}
 
 void symTable::update(){                                                       // Update the offsets of the tables
-	int _offset = 0;                                                           // initial offset will be 0
-	for (symElem &it:table) {                                                  // iterate through all elements in the symbol table
-		it.offset = _offset;                                                   // update the offset for the current entry
-		_offset += it.size;                                                    // update the offset for next value
-		if (it.nested!=NULL) it.nested->update();                              // recursively update the nested tables as well
+    int _offset = 0;                                                           // initial offset will be 0
+    for (symElem &it:table) {                                                  // iterate through all elements in the symbol table
+        it.offset = _offset;                                                   // update the offset for the current entry
+        _offset += it.size;                                                    // update the offset for next value
+        if (it.nested!=NULL) it.nested->update();                              // recursively update the nested tables as well
 	}
 }
 
