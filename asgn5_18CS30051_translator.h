@@ -78,6 +78,7 @@ class symTable {
 public:
     string name;                                                                     // Name of Table
     vector<symElem> table;                                                           // The table of symbols
+    int tmp;                                                                         // counter for the number of temporaries inserted
     symTable* parent;                                                                // Immediate parent of the symbol table
 
     symTable (string name="NULL");                                                   // constructor of the symbol table
