@@ -109,7 +109,7 @@ public:
     int offset;                                                                      // Offset of symbol
     symTable* nested;                                                                // Pointer to nested symbol table
 
-    symElem (string name, string t, symType* ptr = NULL, int width = 0);             //constructor declaration
+    symElem (string name, string t="INTEGER", symType* ptr = NULL, int width = 0);   //constructor declaration
     symElem* update(symType *t);                                                     // A method to update different fields of an existing entry.
 };
 
