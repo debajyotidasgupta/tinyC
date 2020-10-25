@@ -17,14 +17,14 @@ symElem* currentSymbol;                                                       //
 //--------------------------------------------------//
 //      Implementation of the quad functions        //
 //--------------------------------------------------//
-quad::quad(string _result, string _op, string _arg1, string _arg2 = ""):
+quad::quad(string _result, string _op, string _arg1, string _arg2):
     result(_result),arg1(_arg1),arg2(_arg2),op(_op){}                          // constructor defination
 
 //------------------------------------------------------//
 //      Implementation of the Symbol Table functions    //
 //------------------------------------------------------//
 
-symTable::symTable(string _name=""):name(_name),tmp(0){}                       // constructor for the symbol table
+symTable::symTable(string _name):name(_name),tmp(0){}                          // constructor for the symbol table
 
 symElem* symTable::lookup(string _name){                                       // lookup for a symbol in the symbol table
     for(int i=0;i<table.size();i++){                                           // Do a linear search among all the elements
@@ -57,7 +57,7 @@ symType::symType(string type, symType* ptr, int width): type (type),
 //      Implementation of the Symbol Element Class functions    //
 //--------------------------------------------------------------//
 
-symElem::symElem(string name, string t, symType* ptr = NULL, int width = 0){
+symElem::symElem(string name, string t, symType* ptr, int width){
     symType *cur = new symType(t,ptr,width);
     initial_value = "";
     nested = nullptr;
@@ -96,6 +96,17 @@ void emit(string op, string result, float arg1, string arg2) {
 //----------------------------------------------------------------------//
 //          Other global functions required for TAC generation          //
 //----------------------------------------------------------------------//
+
+symElem* gentemp (symType* t, string init) {
+    char n[10];
+    sprintf(n, "t%02d", table->tmp++);
+    symElem s(n);
+    s.type = t;
+    s.size=size_type(t);
+    s.initial_value = init;
+    table->table.push_back (s);
+    return &table->table.back();
+}
 
 symElem* conv (symElem* s, string t) {
     symElem* temp = gentemp(new symType(t));
@@ -154,16 +165,6 @@ bool typecheck(symType* t1, symType* t2){
 	return true;
 }
 
-symElem* gentemp (symType* t, string init) {
-    char n[10];
-    sprintf(n, "t%02d", table->tmp++);
-    symElem s(n);
-    s.type = t;
-    s.size=size_type(t);
-    s.initial_value = init;
-    table->table.push_back (s);
-    return &table->table.back();
-}
 
 int size_type (symType* t){
     if(t->type=="VOID")	return 0;
@@ -173,6 +174,7 @@ int size_type (symType* t){
     else if(t->type=="PTR") return POINTER_SIZE;
     else if(t->type=="ARR") return t->width * size_type (t->ptr);
     else if(t->type=="FUNC") return 0;
+    return -1;
 }
 
 string print_type (symType* t){
@@ -202,10 +204,40 @@ vector<int> merge (vector<int> &a, vector<int> &b) {
 	return a;
 }
 
+expression* convert_int_to_bool (expression* e) {
+    if (e->type!="BOOL") {
+        e->falselist = makelist (nextinstr());
+        emit ("EQOP", "", e->loc->name, "0");
+        e->truelist = makelist (nextinstr());
+        emit ("GOTOOP", "");
+    }
+    return e;
+}
 
+expression* convert_bool_to_int (expression* e) {
+    if (e->type=="BOOL") {
+        e->loc = gentemp(new symType("INTEGER"));
+        backpatch (e->truelist, nextinstr());
+        emit ("EQUAL", e->loc->name, "true");
+        stringstream strs;
+        strs << nextinstr()+1;
+        string temp_str = strs.str();
+        char* intStr = (char*) temp_str.c_str();
+        string str = string(intStr);
+        emit ("GOTOOP", str);
+        backpatch (e->falselist, nextinstr());
+        emit ("EQUAL", e->loc->name, "false");
+    }
+    return e;
+}
 
-extern FILE* yyin;
-// extern int yydebug;
+void changeTable (symTable* newtable) {
+	table = newtable;
+} 
+
+int nextinstr() {
+	return q.array.size();
+}
 
 int main(){
     // yydebug = 5;
@@ -218,9 +250,15 @@ int main(){
             ##############################################\n");
 
     printf("\n\n============================== Parsing line 1 ============================== \n\n");
-    yyparse();
+    
+    globalTable = new symTable("Global");
+	table = globalTable;
+	yyparse();
+	globalTable->update();
+	globalTable->print();
+	q.print();
 
-     printf("\n\n\
+    printf("\n\n\
             ##############################################\n\
             ##                                          ##\n\
             ##             PARSING FINISHED             ##\n\

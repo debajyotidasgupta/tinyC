@@ -24,8 +24,10 @@ using namespace std;
 #define DOUBLE_SIZE         8
 #define POINTER_SIZE        4
 
-extern  char* yytext;
-extern  int yyparse();
+extern FILE* yyin;
+extern char* yytext;
+extern int yyparse();
+// extern int yydebug;
 
 //--------------------------------------------------//
 //                  Class Declarations              //
@@ -50,6 +52,7 @@ extern symElem* currentSymbol;                                                  
 //----------------------------------------------//
 struct expression {
     string type;                                                                     // Storing expression type
+    symElem* loc;                                                                    // pointer to the symbol table entry
     symElem* ptr;                                                                    // Pointer to the symbol in the symbol table entry
     vector<int> truelist;                                                            // list of the quads that exit on the true statement for Boolean Expression
     vector<int> falselist;                                                           // list of the quads that exit on the false statement for Boolean Expression
@@ -150,11 +153,10 @@ void emit(string op, string result, string arg1="", string arg2 = "");          
 //----------------------------------------------------------------------//
 //          Other global functions required for TAC generation          //
 //----------------------------------------------------------------------//
+symElem* gentemp (symType* t,string init="");                                        // Generate a temporary variable and insert it in current symbol table
 symElem* conv (symElem*, string);                                                    // TAC for Type conversion in program
 bool typecheck(symElem* &s1, symElem* &s2);                                          // Checks if two symbols have same type
 bool typecheck(symType* t1, symType* t2);                                            // Checks if two symtype objects have same type
-
-symElem* gentemp (symType* t);                                                       // Generate a temporary variable and insert it in current symbol table
 
 int size_type (symType*);                                                            // Calculate size of any symbol type
 string print_type(symType*);                                                         // For printing type of symbol recursive printing of type
