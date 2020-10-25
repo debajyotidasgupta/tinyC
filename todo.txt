@@ -2,3 +2,4 @@
 
 [ Implement ]
 void symTable::print(){}
+void quadArray::print(){}

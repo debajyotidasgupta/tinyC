@@ -162,8 +162,8 @@ vector<int> makelist (int i);                                                   
 void backpatch (vector<int> lst, int i);                                             // Backpatch all the elements of the list with the given address
 vector<int> merge (vector<int> &lst1, list <int> &lst2);                             // Merge two lists into a single list
 
-expression* convertInt2Bool (expression*);                                           // convert any expression (int) to bool
-expression* convertBool2Int (expression*);                                           // convert bool to expression (int)
+expression* convert_int_to_bool (expression*);                                       // convert any expression (int) to bool
+expression* convert_bool_to_int (expression*);                                       // convert bool to expression (int)
 void changeTable (symTable* newtable);                                               // For changing the current sybol table
 int nextinstr();                                                                     // Returns the next instruction number
 
