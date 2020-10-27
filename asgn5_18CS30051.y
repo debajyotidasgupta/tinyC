@@ -93,8 +93,8 @@ void yyerror(const char*);
 	relational_expression 
 	equality_expression
 	AND_expression
-	XOR_expression
-	OR_expression
+	exclusive_OR_expression
+	inclusive_OR_expression
 	logical_AND_expression
 	logical_OR_expression
 	conditional_expression
@@ -111,6 +111,8 @@ void yyerror(const char*);
 %type <arr> postfix_expression
 	unary_expression
 	cast_expression
+    argument_expression_list
+    argument_expression_list_opt
 
 // auxillary M and N
 %type <instr> M
