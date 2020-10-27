@@ -17,8 +17,29 @@ symElem* currentSymbol;                                                       //
 //--------------------------------------------------//
 //      Implementation of the quad functions        //
 //--------------------------------------------------//
-quad::quad(string _result, string _op, string _arg1, string _arg2):
-    result(_result),arg1(_arg1),arg2(_arg2),op(_op){}                          // constructor defination
+
+
+//----------------Constrtuctors overloaded----------------------
+quad::quad (string result, string arg1, string op, string arg2):
+	result (result), arg1(arg1), arg2(arg2), op (op){};
+
+quad::quad (string result, int arg1, string op, string arg2):
+	result (result), arg2(arg2), op (op) {
+		stringstream strs;
+	    strs << arg1;
+	    string temp_str = strs.str();
+	    char* intStr = (char*) temp_str.c_str();
+		string str = string(intStr);
+		this->arg1 = str;
+	}
+
+quad::quad (string result, float arg1, string op, string arg2):
+	result (result), arg2(arg2), op (op) 
+	{
+		std::ostringstream buff;
+   		buff<<arg1;
+		this->arg1 = buff.str();
+	}
 
 //------------------------------------------------------//
 //      Implementation of the Symbol Table functions    //
@@ -81,16 +102,17 @@ void quadArray::print() {}
 //          Overloaded emit function used by the parser             //
 //------------------------------------------------------------------//
 
-void emit(string op, string result, string arg1, string arg2) {
-	q.array.push_back(quad(result,op,arg1,arg2));
+void emit(string op, string result, string arg1, string arg2) 
+{
+	q.array.push_back(quad(result,arg1,op,arg2));
 }
 
 void emit(string op, string result, int arg1, string arg2) {
-	q.array.push_back(quad(result,op,to_string(arg1),arg2));
+	q.array.push_back(quad(result,arg1,op,arg2));
 }
 
 void emit(string op, string result, float arg1, string arg2) {
-	q.array.push_back(quad(result,op,to_string(arg1),arg2));
+	q.array.push_back(quad(result,arg1,op,arg2));
 }
 
 //----------------------------------------------------------------------//
