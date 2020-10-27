@@ -1,3 +1,14 @@
+/**
+ * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6#gmail.com]
+ *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
+ * Language : C++14
+ * Desc     : header file for the translation statements
+ * Date     : 24.10.2020
+ * Project  : TinyC
+ * Course   : CS39003 Compilers Laboratory
+ */
+
+
 #ifndef _TRANSLATE_H
 #define _TRANSLATE_H
 
@@ -13,23 +24,23 @@ using namespace std;
 #define vec vector
 #define stri string
 #define vd void
-class sym;						//stands for an entry in ST
-class symboltype;				//stands for the type of a symbol in ST
-class symtable;					//stands for ST
-class quad;						//stands for a single entry in the quad Array
-class quadArray;				//stands for the Array of quads
+class sym;																		//stands for an entry in ST
+class symboltype;																//stands for the type of a symbol in ST
+class symtable;																	//stands for ST
+class quad;																		//stands for a single entry in the quad Array
+class quadArray;																//stands for the Array of quads
 
 
 
 class sym 
-{                      //For an entry in ST, we have
+{																				//For an entry in ST, we have
 	public:
-		stri name;				//denotes the name of the symbol
-		symboltype *type;			//denotes the type of the symbol
-		int size;					//denotes the size of the symbol
-		int offset;					//denotes the offset of symbol in ST
-		symtable* nested;			//points to the nested symbol table
-		stri val;				    //initial value of the symbol if specified
+		stri name;																//denotes the name of the symbol
+		symboltype *type;														//denotes the type of the symbol
+		int size;																//denotes the size of the symbol
+		int offset;																//denotes the offset of symbol in ST
+		symtable* nested;														//points to the nested symbol table
+		stri val;				    											//initial value of the symbol if specified
 
 		//Constructor
 		sym (stri , stri t="int", symboltype* ptr = NULL, int width = 0);
