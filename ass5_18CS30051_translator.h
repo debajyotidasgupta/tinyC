@@ -21,14 +21,35 @@ using namespace std;
 #define lsit list<sym>::iterator
 #define listi list<int>
 #define lstsym list<sym>
-#define vd void
+
+//--------------------------------------------------//
+//                  Class Declarations              //
+//--------------------------------------------------//
 
 class sym;                                                                                 // stands for an entry in ST
-class symboltype;                                                                          // stands for the type of a symbol in ST
-class symtable;                                                                            // stands for ST
 class quad;                                                                                // stands for a single entry in the quad Array
+class symtable;                                                                            // stands for ST
+class symboltype;                                                                          // stands for the type of a symbol in ST
 class quadArray;                                                                           // stands for the Array of quads
 
+typedef sym s;
+typedef symboltype symtyp;
+
+//----------------------------------------------//
+//              global variables                //
+//----------------------------------------------//
+
+extern symtable* ST;                                                                       // denotes the current Symbol Table
+extern symtable* globalST;                                                                 // denotes the Global Symbol Table
+extern s* currSymbolPtr;                                                                   // denotes the latest encountered symbol
+extern quadArray Q;                                                                        // denotes the quad Array
+extern basicType bt;                                                                       // denotes the Type ST
+extern long long int instr_count;                                                          // denotes count of instr
+extern bool debug_on;                                                                      // bool for printing debug output
+
+//----------------------------------------------------------------------//
+//      Defination of structure of each element of the symbol table     //
+//----------------------------------------------------------------------//
 class sym 
 {                                                                                          // For an entry in ST, we have
 	public:
@@ -40,20 +61,22 @@ class sym
         string val;                                                                        // initial value of the symbol if specified
           
         sym (string , string t="int", symboltype* ptr = NULL, int width = 0);              // constructor
-        //Update the ST Entry 
-        sym* update(symboltype*); 	// A method to update different fields of an existing entry.
+        sym* update(symboltype*); 	                                                       // Method to update different fields of an existing entry.
 };
-typedef sym s;
+
+//--------------------------------------------------//
+//      Defination of the type of symbol            //
+//--------------------------------------------------//
 class symboltype 
-{                      //For the Type of Symbol, we have
-	public:
-		string type;					//stores the type of symbol. 
-		int width;					    //stores the size of Array (if we encounter an Array) and it is 1 in default case
-		symboltype* arrtype;			//for arr1s which are multidimensional, we need this
-		//Constructor
-		symboltype(string , symboltype* ptr = NULL, int width = 1);
+{                                                                                           // Class to store the type of the symbol
+    public:
+        string type;                                                                        // stores the type of symbol. 
+        int width;                                                                          // stores the size of Array (if we encounter an Array) and it is 1 in default case
+        symboltype* arrtype;                                                                // for storing the typr of the array in recursive manner
+        
+		symboltype(string , symboltype* ptr = NULL, int width = 1);                         // Constructor
 };
-typedef symboltype symtyp;
+
 class symtable 
 { 					//For the Symbol Table Class, we have
 	public:
@@ -66,9 +89,9 @@ class symtable
 		//Lookup for a symbol in ST
 		s* lookup (string);		
 		//Print the ST						
-		vd print();	
+		void print();	
 		//Update the ST				            			
-		vd update();						        			
+		void update();						        			
 };
 class quad 
 { 			//A single quad has four components:
@@ -79,9 +102,9 @@ class quad
 		string arg2;				// Argument 2
 
 		//Print the Quad
-		vd print();	
-		vd type1();      //common printing types
-		vd type2();
+		void print();	
+		void type1();      //common printing types
+		void type2();
 
 		//Constructors							
 		quad (string , string , string op = "=", string arg2 = "");			
@@ -94,53 +117,45 @@ class quadArray
 	public:
 		vector<quad> Array;		                    //Simply an Array (vector) of quads
 		//Print the quadArray
-		vd print();								
+		void print();								
 };
 
 class basicType 
 {                        //To denote a basic type
 	public:
-		vector<stri> type;                    //type name
+		vector<string> type;                    //type name
 		vector<int> size;                       //size
-		vd addType(string ,int );
+		void addType(string ,int );
 };
-
-extern symtable* ST;						// denotes the current Symbol Table
-extern symtable* globalST;				    // denotes the Global Symbol Table
-extern s* currSymbolPtr;					    // denotes the latest encountered symbol
-extern quadArray Q;							// denotes the quad Array
-extern basicType bt;                        // denotes the Type ST
-extern long long int instr_count;			// denotes count of instr
-extern bool debug_on;			// bool for printing debug output
 
 string convertIntToString(int );
 string convertFloatToString(float );
-vd generateSpaces(int );
+void generateSpaces(int );
 //Different Attributes for Different Types and Extra Functions
 
 s* gentemp (symboltype* , string init = "");	  //generate a temporary variable and insert it in the current ST
 
 //Emit Functions
-vd emit(string , string , string arg1="", string arg2 = "");  
-vd emit(string , string , int, string arg2 = "");		  
-vd emit(string , string , float , string arg2 = "");   
+void emit(string , string , string arg1="", string arg2 = "");  
+void emit(string , string , int, string arg2 = "");		  
+void emit(string , string , float , string arg2 = "");   
 
 //Backpatching and related functions
-vd backpatch (list <int> , int );
+void backpatch (list <int> , int );
 listi makelist (int );							    // Make a new list contaninig an integer
 listi merge (list<int> &l1, list <int> &l2);		// Merge two lists into a single list
 
 int nextinstr();										// Returns the next instruction number
-vd update_nextinstr();
+void update_nextinstr();
 
-vd debug();											// Used for printing debugging output
+void debug();											// Used for printing debugging output
 //Type checking and conversion functions
-s* convertType(sym*, stri);								// for type conversion
+s* convertType(sym*, string);								// for type conversion
 bool compareSymbolType(sym* &s1, sym* &s2);				// check for same type of two symbol table entries
 bool compareSymbolType(symboltype*, symboltype*);	// check for same type of two symboltype objects
 int computeSize (symboltype *);						// calculate size of symbol type
 string printType(symboltype *);							// print type of symbol
-vd changeTable (symtable* );					//to change current table
+void changeTable (symtable* );					//to change current table
 
 //Other structures
 struct Statement {
