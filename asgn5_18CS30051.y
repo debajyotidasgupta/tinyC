@@ -1,5 +1,6 @@
 %{ /* C Declarations and Definitions */
 #include <stdio.h>
+#include <sstream>
 #include "asgn5_18CS30051_translator.h"
 extern int line;
 extern int yylex();
@@ -111,8 +112,8 @@ void yyerror(const char*);
 %type <arr> postfix_expression
 	unary_expression
 	cast_expression
-    argument_expression_list
-    argument_expression_list_opt
+
+%type <intval> argument_expression_list
 
 // auxillary M and N
 %type <instr> M
@@ -149,7 +150,7 @@ constant: INTEGER_CONST
         { 
             // printf("constant -> character_constant\n"); 
             $$ = gentemp(new symType("CHAR"), $1);
-			emit("EQUAL", $$->name, to_string($1));
+			emit("EQUAL", $$->name, string($1));
         }
         ;
 
@@ -202,29 +203,23 @@ postfix_expression: primary_expression
                         if ($1->cat == "ARR") 
 						{						
 								// if already computed
-                                symElem* t = gentemp(new symType("INTEGER"));
-                                stringstream strs;
-                                strs << size_type($$->type);
-                                string temp_str = strs.str();
-                                char* intStr = (char*) temp_str.c_str();
-                                string str = string(intStr);				
-                                emit ("MULT", t->name, $3->ptr->name, str);
+                                symElem* t = gentemp(new symType("INTEGER"));		
+                                emit ("MULT", t->name, $3->ptr->name, to_string(size_type($$->type)));
                                 emit ("ADD", $$->ptr->name, $1->ptr->name, t->name);
                         }
                         else 
 						{
-                                stringstream strs;
-                                strs << size_type($$->type);
-                                string temp_str = strs.str();
-                                char* intStr1 = (char*) temp_str.c_str();
-                                string str1 = string(intStr1);		
-                                emit("MULT", $$->ptr->name, $3->ptr->name, str1);
+                                emit("MULT", $$->ptr->name, $3->ptr->name, to_string(size_type($$->type)));
                         }
 
                         // Mark that it contains array address and first time computation is done
                         $$->cat = "ARR";
                 }
-                | postfix_expression '(' argument_expression_list_opt ')'
+                | postfix_expression '(' ')'
+                {
+                    // No semantic required
+                }
+                | postfix_expression '(' argument_expression_list ')'
                 { 
                         // printf("postfix_expression -> postfix_expression ( argument_expression_list_opt )\n");
                         $$ = new array();
@@ -280,19 +275,6 @@ postfix_expression: primary_expression
 					$$->ptr = gentemp(new symType("INTEGER"));
 				}
                 ;
-
-argument_expression_list_opt: argument_expression_list
-                            {   // printf("argument_expression_list_opt -> argument_expression_list\n"); 
-                                $$ = new array ();
-                                $$->array = $1->ptr;
-                                $$->ptr = $1->ptr;
-                                $$->type = $1->ptr->type;
-                            }
-                            | %empty  
-                            { 
-                                // printf("argument_expression_list_opt -> %%empty\n"); 
-                            }
-                            ;
 
 argument_expression_list: assignment_expression
                         { 
@@ -596,8 +578,8 @@ equality_expression: relational_expression
                     { 
                         // printf("equality_expression -> equality_expression == relational_expression\n");
                         if (typecheck ($1->ptr, $3->ptr)) {
-                            convertBool2Int ($1);
-                            convertBool2Int ($3);
+                            convert_bool_to_int ($1);
+                            convert_bool_to_int ($3);
 
                             $$ = new expression();
                             $$->type = "BOOL";
@@ -614,8 +596,8 @@ equality_expression: relational_expression
                         // printf("equality_expression -> equality_expression != relational_expression\n");
                         if (typecheck ($1->ptr, $3->ptr) ) {
                             // If any is bool get its value
-                            convertBool2Int ($1);
-                            convertBool2Int ($3);
+                            convert_bool_to_int ($1);
+                            convert_bool_to_int ($3);
 
                             $$ = new expression();
                             $$->type = "BOOL";
@@ -767,12 +749,12 @@ conditional_expression: logical_OR_expression
                         $$->ptr = gentemp($5->ptr->type);
                         $$->ptr->update($5->ptr->type);
                         emit("EQUAL", $$->ptr->name, $9->ptr->name);
-                        list<int> l = makelist(nextinstr());
+                        vector<int> l = makelist(nextinstr());
                         emit ("GOTOOP", "");
 
                         backpatch($6->nextlist, nextinstr());
                         emit("EQUAL", $$->ptr->name, $5->ptr->name);
-                        list<int> m = makelist(nextinstr());
+                        vector<int> m = makelist(nextinstr());
                         l = merge (l, m);
                         emit ("GOTOOP", "");
 
@@ -1101,7 +1083,7 @@ direct_declarator: IDENTIFIER
                         table->name = $1->name;
 
                         if ($1->type->type !="VOID") {
-                            sym *s = table->lookup("return");
+                            symElem* s = table->lookup("return");
                             s->update($1->type);		
                         }
                         $1->nested=table;
@@ -1120,7 +1102,7 @@ direct_declarator: IDENTIFIER
                         table->name = $1->name;
 
                         if ($1->type->type !="VOID") {
-                            sym *s = table->lookup("return");
+                            symElem* s = table->lookup("return");
                             s->update($1->type);		
                         }
                         $1->nested=table;
@@ -1406,7 +1388,7 @@ selection_statement: IF '(' expression N ')' M statement N %prec THEN
                         convert_int_to_bool($3);
                         $$ = new statement();
                         backpatch ($3->truelist, $6);
-                        list<int> temp = merge ($3->falselist, $7->nextlist);
+                        vector<int> temp = merge ($3->falselist, $7->nextlist);
                         $$->nextlist = merge ($8->nextlist, temp);
                     }
                     | IF '(' expression N ')' M statement N ELSE M statement 
@@ -1417,7 +1399,7 @@ selection_statement: IF '(' expression N ')' M statement N %prec THEN
                         $$ = new statement();
                         backpatch ($3->truelist, $6);
                         backpatch ($3->falselist, $10);
-                        list<int> temp = merge ($7->nextlist, $8->nextlist);
+                        vector<int> temp = merge ($7->nextlist, $8->nextlist);
                         $$->nextlist = merge ($11->nextlist,temp);
                     }
                     | SWITCH '(' expression ')' statement

@@ -69,7 +69,10 @@ public:
     string arg2;                                                                      // Argument 2
     string result;                                                                    // Result
     void print();                                                                     // Print Quad
-    quad (string result, string op, string arg1, string arg2 = "");                   //constructors
+
+	quad (string result, string arg1, string op = "EQUAL", string arg2 = "");         //constructors
+	quad (string result, int arg1, string op = "EQUAL", string arg2 = "");            //constructors
+	quad (string result, float arg1, string op = "EQUAL", string arg2 = "");          //constructors
 };
 
 
@@ -162,7 +165,7 @@ string print_type(symType*);                                                    
 
 vector<int> makelist (int i);                                                        // Make a new list contaninig an integer
 void backpatch (vector<int> lst, int i);                                             // Backpatch all the elements of the list with the given address
-vector<int> merge (vector<int> &lst1, list <int> &lst2);                             // Merge two lists into a single list
+vector<int> merge (vector<int> &lst1, vector<int> &lst2);                            // Merge two lists into a single list
 
 expression* convert_int_to_bool (expression*);                                       // convert any expression (int) to bool
 expression* convert_bool_to_int (expression*);                                       // convert bool to expression (int)
