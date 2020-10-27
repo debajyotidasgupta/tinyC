@@ -86,6 +86,7 @@ void yyerror(const char*);
 // all the expressions
 %type <expr>
 	expression
+	expression_opt
 	primary_expression 
 	multiplicative_expression
 	additive_expression
@@ -93,14 +94,13 @@ void yyerror(const char*);
 	relational_expression 
 	equality_expression
 	AND_expression
-	XOR_expression
-	OR_expression
+	exclusive_OR_expression
+	inclusive_OR_expression
 	logical_AND_expression
 	logical_OR_expression
 	conditional_expression
 	assignment_expression
 	expression_statement
-
 
 %type <unaryOperator> unary_operator
 %type <symp> constant initializer
@@ -111,6 +111,8 @@ void yyerror(const char*);
 %type <arr> postfix_expression
 	unary_expression
 	cast_expression
+    argument_expression_list
+    argument_expression_list_opt
 
 // auxillary M and N
 %type <instr> M
@@ -125,6 +127,7 @@ void yyerror(const char*);
 	jump_statement
 	block_item
 	block_item_list
+	block_item_list_opt
 
 %start translation_unit
 
@@ -199,7 +202,7 @@ postfix_expression: primary_expression
                         if ($1->cat == "ARR") 
 						{						
 								// if already computed
-                                sym* t = gentemp(new symType("INTEGER"));
+                                symElem* t = gentemp(new symType("INTEGER"));
                                 stringstream strs;
                                 strs << size_type($$->type);
                                 string temp_str = strs.str();
@@ -1028,16 +1031,6 @@ declarator: pointer direct_declarator
             }
             ;
 
-pointer_opt: pointer
-            { 
-                // printf("pointer_opt -> pointer\n"); $$ = $1; 
-            }
-            | %empty  
-            { 
-                // printf("pointer_opt -> %%empty\n"); 
-            }
-            ;
-
 direct_declarator: IDENTIFIER
                     { 
                         // printf("direct_declarator -> IDENTIFIER\n"); 
@@ -1150,25 +1143,6 @@ CT: %empty
 		}
 	}
 	;
-assignment_expression_opt: assignment_expression
-                         { 
-                             // printf("assignment_expression_opt -> assignment_expression\n"); 
-                         }
-                         | %empty 
-                         { 
-                             // printf("assignment_expression_opt -> %%empty\n"); 
-                         }
-                         ;
-
-identifier_list_opt: identifier_list
-                   { 
-                       // printf("identifier_list_opt -> identifier_list\n"); 
-                   }
-                   | %empty 
-                   { 
-                       // printf("identifier_list_opt -> %%empty\n"); 
-                   }
-                   ;
 
 pointer: '*'
         { 
@@ -1566,11 +1540,6 @@ external_declaration: function_definition
                     }
                     ;
 
-function_definition: declaration_specifiers declarator declaration_list_opt compound_statement
-                   { 
-                       // printf("function_definition -> declaration_specifiers declarator declaration_list_opt compound_statement\n"); 
-                   }
-                   ;
 function_definition: declaration_specifiers declarator declaration_list CT compound_statement
                     {
                         // printf("function_definition -> declaration_specifiers declarator declaration_list compound_statement\n");
@@ -1581,16 +1550,6 @@ function_definition: declaration_specifiers declarator declaration_list CT compo
                         table->parent = globalTable;
                         changeTable (globalTable);
                     }	
-                    ;
-
-declaration_list_opt: declaration_list
-                    { 
-                        // printf("declaration_list_opt -> declaration_list\n"); 
-                    }
-                    | %empty 
-                    { 
-                        // printf("declaration_list_opt -> %%empty\n"); 
-                    }
                     ;
 
 declaration_list: declaration
