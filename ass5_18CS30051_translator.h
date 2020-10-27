@@ -61,7 +61,7 @@ class sym
         string val;                                                                        // initial value of the symbol if specified
           
         sym (string , string t="int", symboltype* ptr = NULL, int width = 0);              // constructor
-        sym* update(symboltype*); 	                                                       // Method to update different fields of an existing entry.
+        sym* update(symboltype*);                                                          // Method to update different fields of an existing entry.
 };
 
 //--------------------------------------------------//
@@ -74,24 +74,21 @@ class symboltype
         int width;                                                                          // stores the size of Array (if we encounter an Array) and it is 1 in default case
         symboltype* arrtype;                                                                // for storing the typr of the array in recursive manner
         
-		symboltype(string , symboltype* ptr = NULL, int width = 1);                         // Constructor
+        symboltype(string , symboltype* ptr = NULL, int width = 1);                         // Constructor
 };
 
 class symtable 
-{ 					//For the Symbol Table Class, we have
-	public:
-		string name;				//Name of the Table
-		int count;					//Count of the temporary variables
-		lstsym table; 			//The table of symbols which is essentially a list of sym
-		symtable* parent;			//Parent ST of the current ST
-		//Constructor
-		symtable (string name="NULL");
-		//Lookup for a symbol in ST
-		s* lookup (string);		
-		//Print the ST						
-		void print();	
-		//Update the ST				            			
-		void update();						        			
+{                                                                                           // class to store the symbol table
+    public:
+        string name;                                                                        // Name of the Table
+        int count;                                                                          // Count of the temporary variables
+        lstsym table;                                                                       // The table of symbols which is essentially a list of sym
+        symtable* parent;                                                                   // Parent ST of the current ST
+        
+        symtable (string name="NULL");                                                      // Constructor
+        s* lookup (string);                                                                 // Lookup for a symbol in ST
+        void print();                                                                       // Print the ST
+        void update();                                                                      // Update the ST
 };
 class quad 
 { 			//A single quad has four components:
