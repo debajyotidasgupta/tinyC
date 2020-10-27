@@ -25,7 +25,6 @@ using namespace std;
 #define POINTER_SIZE        4
 
 extern FILE* yyin;
-extern char* yytext;
 extern int yyparse();
 // extern int yydebug;
 

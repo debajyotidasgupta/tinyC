@@ -107,3 +107,5 @@ NEWLINE         [\n]
 {NEWLINE}               { printf("\n\n============================== Parsing line %d ============================== \n\n", ++line ); }
 
 %%
+
+int yywrap(){ return 1; }
