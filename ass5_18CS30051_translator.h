@@ -77,6 +77,9 @@ class symboltype
         symboltype(string , symboltype* ptr = NULL, int width = 1);                         // Constructor
 };
 
+//------------------------------------------------------//
+//          Class defination for the Symbol Table       //
+//------------------------------------------------------//
 class symtable 
 {                                                                                           // class to store the symbol table
     public:
@@ -90,23 +93,27 @@ class symtable
         void print();                                                                       // Print the ST
         void update();                                                                      // Update the ST
 };
+
+//--------------------------------------------------//
+//      Defination of the struct of quad element    //
+//--------------------------------------------------//
 class quad 
-{ 			//A single quad has four components:
-	public:
-		string res;					// Result
-		string op;					// Operator
-		string arg1;				// Argument 1
-		string arg2;				// Argument 2
+{                                                                                            // A single quad has four components:
+    public:
+        string res;	                                                                         // Result
+        string op;                                                                           // Operator
+        string arg1;                                                                         // Argument 1
+        string arg2;                                                                         // Argument 2    
 
-		//Print the Quad
-		void print();	
-		void type1();      //common printing types
-		void type2();
+	    //----------Print the Quad--------------
+        void print();	
+        void type1();                                                                        // common printing types
+        void type2();
 
-		//Constructors							
-		quad (string , string , string op = "=", string arg2 = "");			
-		quad (string , int , string op = "=", string arg2 = "");				
-		quad (string , float , string op = "=", string arg2 = "");			
+        //----------Constructors---------------							
+        quad (string , string , string op = "=", string arg2 = "");			
+        quad (string , int , string op = "=", string arg2 = "");				
+        quad (string , float , string op = "=", string arg2 = "");			
 };
 
 class quadArray 
