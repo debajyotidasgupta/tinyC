@@ -1,8 +1,8 @@
 all:
-	flex asgn5_18CS30051.l
 	bison -dtv asgn5_18CS30051.y
-	gcc -c lex.yy.c
-	gcc -c asgn5_18CS30051.tab.c
+	g++ -c asgn5_18CS30051.tab.c
+	flex asgn5_18CS30051.l
+	g++ -c lex.yy.c
 	g++ -c asgn5_18CS30051_translator.h
 	g++ -c asgn5_18CS30051_translator.cxx
 	g++ lex.yy.o asgn5_18CS30051.tab.o asgn5_18CS30051_translator.o -lfl
@@ -18,7 +18,6 @@ clean:
 	rm a.out\
 		lex.yy.c\
 		lex.yy.o\
-		asgn5_18CS30051.o\
 		asgn5_18CS30051.tab.c\
 		asgn5_18CS30051.tab.h\
 		asgn5_18CS30051.tab.o\

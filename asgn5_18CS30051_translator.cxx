@@ -241,7 +241,7 @@ int nextinstr() {
 
 int main(){
     // yydebug = 5;
-    yyin = fopen("asgn4_18CS30051_test.c", "r");
+    // yyin = fopen("asgn4_18CS30051_test.c", "r");
     printf("\
             ##############################################\n\
             ##                                          ##\n\
