@@ -1118,7 +1118,7 @@ direct_declarator: IDENTIFIER
                     ;
 CT: %empty 
 	{ 															// Used for changing to symbol table for a function
-		if (currentSymbol->nested==NULL) changeTable(new symtable(""));	// Function symbol table doesn't already exist
+		if (currentSymbol->nested==NULL) changeTable(new symTable(""));	// Function symbol table doesn't already exist
 		else {
 			changeTable (currentSymbol ->nested);						// Function symbol table already exists
 			emit ("LABEL", table->name);
