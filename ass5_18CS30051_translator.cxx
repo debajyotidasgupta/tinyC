@@ -132,7 +132,9 @@ void symtable::print()                                                          
     for(int t1=0;t1<50;t1++) std::cout<<"__";                                                         // print lines for the border of the table
     std::cout<<std::endl;
 
-    std::cout << "Table Name: " << (*this).name << "\t\t\t Parent Name: ";                            // table name
+    std::cout << "Table Name: " << (*this).name ;
+	generateSpaces(23-this->name.length());
+	std::cout << " Parent Name: ";                                                                    // table name
     if(((*this).parent==NULL)) std::cout<<"NULL"<<std::endl;                                          // If no parent for the current table print NULL  
     else std::cout<<(*this).parent->name<<std::endl;                                                  // print the name for the current table
     for(int x=0; x<50; x++) std::cout<<"__";                                                          // Design formatting
@@ -333,11 +335,11 @@ void quadArray::print()                                                         
     {
         if(it->op=="label")                                                                             // print the label if it is the operator 
         {
-            std::cout<<std::endl<<"L"<<j<<": ";
+            std::cout<<std::endl<<j<<": ";
             it->print();
         }
         else {                                                                                          // otherwise give 4 spaces and then print
-            std::cout<<"L"<<j<<": ";
+            std::cout<<j<<": ";
             generateSpaces(4);
             it->print();
         }
