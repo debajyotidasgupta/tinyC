@@ -26,8 +26,9 @@ using namespace std;
 class sym;                                                                                 // stands for an entry in ST
 class quad;                                                                                // stands for a single entry in the quad Array
 class symtable;                                                                            // stands for ST
-class symboltype;                                                                          // stands for the type of a symbol in ST
+class basicType;                                                                           // stands for the basic type data
 class quadArray;                                                                           // stands for the Array of quads
+class symboltype;                                                                          // stands for the type of a symbol in ST
 class Expression;                                                                          // standsfor the expression type data storage
 
 typedef sym s;
@@ -106,8 +107,8 @@ class quad
 
 	    //----------Print the Quad--------------
         void print();	
-        void type1();                                                                        // common printing types
-        void type2();
+        void type1();                                                                        // for printing binary operators
+        void type2();                                                                        // for printing relational operators and jumps
 
         //----------Constructors---------------							
         quad (string , string , string op = "=", string arg2 = "");			
@@ -198,12 +199,12 @@ list<int> merge (list<int> &l1, list <int> &l2);                                
 //----------------------------------------------------------------------//
 //          Other helper functions required for TAC generation          //
 //----------------------------------------------------------------------//
+//------------- Type checking and Type conversion functions -------------
 string convertIntToString(int);                                                              // helper function to convert integer to string
 string convertFloatToString(float);                                                          // helper function to convert float to string
 Exps convertIntToBool(Exps);                                                                 // helper function to convert int expression to boolean
 Exps convertBoolToInt(Exps);                                                                 // helper function to convert boolean expression to int
 
-//------------- Type checking and Type conversion functions -------------
 s* convertType(sym*, string);                                                                // helper function for type conversion
 int computeSize (symboltype *);                                                              // helper function to calculate size of symbol type
 void changeTable (symtable* );                                                               // helper function to change current table
