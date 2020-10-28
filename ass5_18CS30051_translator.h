@@ -18,9 +18,6 @@ extern  char* yytext;
 extern  int yyparse();
 
 using namespace std;
-#define lsit list<sym>::iterator
-#define listi list<int>
-#define lstsym list<sym>
 
 //--------------------------------------------------//
 //                  Class Declarations              //
@@ -31,9 +28,11 @@ class quad;                                                                     
 class symtable;                                                                            // stands for ST
 class symboltype;                                                                          // stands for the type of a symbol in ST
 class quadArray;                                                                           // stands for the Array of quads
+class Expression;                                                                          // standsfor the expression type data storage
 
 typedef sym s;
 typedef symboltype symtyp;
+typedef Expression* Exps;
 
 //----------------------------------------------//
 //              global variables                //
@@ -85,7 +84,7 @@ class symtable
     public:
         string name;                                                                        // Name of the Table
         int count;                                                                          // Count of the temporary variables
-        lstsym table;                                                                       // The table of symbols which is essentially a list of sym
+        list<sym> table;                                                                    // The table of symbols which is essentially a list of sym
         symtable* parent;                                                                   // Parent ST of the current ST
         
         symtable (string name="NULL");                                                      // Constructor
@@ -116,72 +115,109 @@ class quad
         quad (string , float , string op = "=", string arg2 = "");			
 };
 
+//----------------------------------------------------------//
+//          Defination of the quad array type               //
+//----------------------------------------------------------//
 class quadArray 
-{ 		//Quad Array
-	public:
-		vector<quad> Array;		                    //Simply an Array (vector) of quads
-		//Print the quadArray
-		void print();								
+{                                                                                            // Quad Array Class declaration
+    public:
+        vector<quad> Array;                                                                  // Simply an Array (vector) of quads
+		void print();                                                                        // Print the quadArray
 };
 
+//----------------------------------------------------------//
+//          Defination of the basic type                    //
+//----------------------------------------------------------//
 class basicType 
-{                        //To denote a basic type
+{                                                                                            // To denote a basic type
 	public:
-		vector<string> type;                    //type name
-		vector<int> size;                       //size
+		vector<string> type;                                                                 // type name
+		vector<int> size;                                                                    // size of the type
 		void addType(string ,int );
 };
 
-string convertIntToString(int );
-string convertFloatToString(float );
-void generateSpaces(int );
-//Different Attributes for Different Types and Extra Functions
+//----------------------------------------------//
+//     Defination of the expression type        //
+//----------------------------------------------//
+struct Expression {
+    s* loc;                                                                                  // pointer to the symbol table entry
+    string type;                                                                             // to store whether the expression is of type int or bool or float or char
+    list<int> truelist;                                                                      // fruelist for boolean expressions
+    list<int> falselist;                                                                     // falselist for boolean expressions
+    list<int> nextlist;                                                                      // for statement expressions
+};
 
-s* gentemp (symboltype* , string init = "");	  //generate a temporary variable and insert it in the current ST
+//--------------------------------------------------------------//
+//          Attributes of the array type element                //
+//--------------------------------------------------------------//
+struct Array {
+	string atype;                                                                            // Used for type of Array: may be "ptr" or "arr" type
+	s* loc;                                                                                  // Location used to compute address of Array
+	s* Array;                                                                                // pointer to the symbol table entry
+	symboltype* type;                                                                        // type of the subarr1 generated (important for multidimensional arr1s)
+};
 
-//Emit Functions
+struct Statement {
+	list<int> nextlist;                                                                      // nextlist for Statement with dangling exit
+};
+
+//------------------------------------------------------------------//
+//          Overloaded emit function used by the parser             //
+//------------------------------------------------------------------//
 void emit(string , string , string arg1="", string arg2 = "");  
 void emit(string , string , int, string arg2 = "");		  
 void emit(string , string , float , string arg2 = "");   
 
-//Backpatching and related functions
-void backpatch (list <int> , int );
-listi makelist (int );							    // Make a new list contaninig an integer
-listi merge (list<int> &l1, list <int> &l2);		// Merge two lists into a single list
+/**
+ * GENTEMP
+ * -------
+ * generates a temporary variable 
+ * and insert it in the current 
+ * Symbole table 
+ * 
+ * Parameter
+ * ---------
+ * symbol type * : pointer to the 
+ *                 class of symbol type
+ * init : initial value of the structure
+ * 
+ * Return
+ * ------
+ * Pointer to the newly created symbol 
+ * table entry
+ */
+s* gentemp (symboltype* , string init = "");
 
-int nextinstr();										// Returns the next instruction number
+//-------------------------------------------------------------//
+//            Backpatching and related functions               //
+//-------------------------------------------------------------//
+void backpatch (list <int> , int );                                                          // backpatch the dangling instructions with the given address(parameter) 
+list<int> makelist (int );                                                                   // Make a new list contanining an integer address
+list<int> merge (list<int> &l1, list <int> &l2);                                             // Merge two lists into a single list
+
+//----------------------------------------------------------------------//
+//          Other helper functions required for TAC generation          //
+//----------------------------------------------------------------------//
+string convertIntToString(int);                                                              // helper function to convert integer to string
+string convertFloatToString(float);                                                          // helper function to convert float to string
+Exps convertIntToBool(Exps);                                                                 // helper function to convert int expression to boolean
+Exps convertBoolToInt(Exps);                                                                 // helper function to convert boolean expression to int
+
+//------------- Type checking and Type conversion functions -------------
+s* convertType(sym*, string);                                                                // helper function for type conversion
+int computeSize (symboltype *);                                                              // helper function to calculate size of symbol type
+void changeTable (symtable* );                                                               // helper function to change current table
+bool compareSymbolType(sym* &s1, sym* &s2);                                                  // helper function to check for same type of two symbol table entries
+bool compareSymbolType(symboltype*, symboltype*);                                            // helper function to check for same type of two symboltype objects
+
+int nextinstr();                                                                             // Returns the next instruction number
 void update_nextinstr();
 
-void debug();											// Used for printing debugging output
-//Type checking and conversion functions
-s* convertType(sym*, string);								// for type conversion
-bool compareSymbolType(sym* &s1, sym* &s2);				// check for same type of two symbol table entries
-bool compareSymbolType(symboltype*, symboltype*);	// check for same type of two symboltype objects
-int computeSize (symboltype *);						// calculate size of symbol type
-string printType(symboltype *);							// print type of symbol
-void changeTable (symtable* );					//to change current table
-
-//Other structures
-struct Statement {
-	listi nextlist;					//nextlist for Statement
-};
-
-struct Array {
-	string atype;				//Used for type of Array: may be ptr or arr
-	s* loc;					//Location used to compute address of Array
-	s* Array;					//pointer to the symbol table entry
-	symboltype* type;			//type of the subarr1 generated (important for multidimensional arr1s)
-};
-
-struct Expression {
-	s* loc;								//pointer to the symbol table entry
-	string type; 							//to store whether the expression is of type int or bool or float or char
-	listi truelist;						//fruelist for boolean expressions
-	listi falselist;					//falselist for boolean expressions
-	listi nextlist;						//for statement expressions
-};
-typedef Expression* Exps;
-Exps convertIntToBool(Exps);				// convert int expression to boolean
-Exps convertBoolToInt(Exps);				// convert boolean expression to int
+//----------------------------------------------------------------------//
+//           Other helper function for debugging and printing           //
+//----------------------------------------------------------------------//
+void debug();                                                                                // Used for printing debugging output
+string printType(symboltype *);                                                              // print type of symbol
+void generateSpaces(int);
 
 #endif
