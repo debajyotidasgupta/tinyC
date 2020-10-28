@@ -151,14 +151,14 @@ struct Expression {
 //          Attributes of the array type element                //
 //--------------------------------------------------------------//
 struct Array {
-	string atype;                                                                            // Used for type of Array: may be "ptr" or "arr" type
-	s* loc;                                                                                  // Location used to compute address of Array
-	s* Array;                                                                                // pointer to the symbol table entry
-	symboltype* type;                                                                        // type of the subarr1 generated (important for multidimensional arr1s)
+    string atype;                                                                            // Used for type of Array: may be "ptr" or "arr" type
+    s* loc;                                                                                  // Location used to compute address of Array
+    s* Array;                                                                                // pointer to the symbol table entry
+    symboltype* type;                                                                        // type of the subarr1 generated (important for multidimensional arr1s)
 };
 
 struct Statement {
-	list<int> nextlist;                                                                      // nextlist for Statement with dangling exit
+    list<int> nextlist;                                                                      // nextlist for Statement with dangling exit
 };
 
 //------------------------------------------------------------------//
