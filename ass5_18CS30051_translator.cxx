@@ -1,7 +1,15 @@
+/**
+ * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6#gmail.com]
+ *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
+ * Language : C++14
+ * Desc     : function definations file for the translation statements
+ * Date     : 24.10.2020
+ * Project  : TinyC
+ * Course   : CS39003 Compilers Laboratory
+ */
+
 #include "ass5_18CS30051_translator.h"
-#include<sstream>
-#include<string>
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 //reference to global variables declared in header file 
@@ -61,7 +69,7 @@ symtable::symtable(string name)            //Simple constructor for a symbol tab
 sym* symtable::lookup(string name)               //Lookup an id in the symbol table
 {
 	sym* symbol;
-	lsit it;                      //it is iterator for list of symbols
+	list<sym>::iterator it;                      //it is iterator for list of symbols
 	it=table.begin();
 	while(it!=table.end()) 
 	{
@@ -78,7 +86,7 @@ void symtable::update()                      //Update the symbol table
 {
 	list<symtable*> tb;                 //list of tables
 	int off;
-	lsit it;
+	list<sym>::iterator it;
 	it=table.begin();
 	while(it!=table.end()) 
 	{
@@ -135,7 +143,7 @@ void symtable::print()                            //print a symbol table
 	cout<<endl;
 	ostringstream str1;
 	 
-	for(lsit it=table.begin(); it!=table.end(); it++) {          //Print details for the table
+	for(list<sym>::iterator it=table.begin(); it!=table.end(); it++) {          //Print details for the table
 		
 		cout<<it->name;                                    //Print name
 		
