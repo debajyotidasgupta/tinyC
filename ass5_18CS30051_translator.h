@@ -1,5 +1,5 @@
 /**
- * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6#gmail.com]
+ * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6@gmail.com]
  *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
  * Language : C++14
  * Desc     : header file for the translation statements

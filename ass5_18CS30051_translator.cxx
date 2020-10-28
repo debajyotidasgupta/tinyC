@@ -1,5 +1,5 @@
 /**
- * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6#gmail.com]
+ * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6@gmail.com]
  *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
  * Language : C++14
  * Desc     : function definations file for the translation statements
@@ -12,16 +12,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//reference to global variables declared in header file 
-symtable* globalST;					// Global Symbol Table
-quadArray Q;						// Quad Array
-string var_type;						// Stores latest type
-symtable* ST;						// Points to current symbol table
-sym* currSymbolPtr; 					// points to current symbol
-basicType bt;                       // basic types
-long long int instr_count;	// count of instr (used for sanity check)
-bool debug_on;			// bool for printing debug output
-void printpattern(){cout<<"";}   // used for debugging
+
+//----------------------------------------------//
+//              global variables                //
+//          (Referance from the headers)        //
+//----------------------------------------------//
+quadArray Q;                                                                                       // Quad Array
+symtable* ST;                                                                                      // Points to current symbol table
+basicType bt;                                                                                      // basic types
+bool debug_on;                                                                                     // bool for printing debug output
+string var_type;                                                                                   // Stores latest type
+symtable* globalST;                                                                                // Global Symbol Table
+sym* currSymbolPtr;                                                                                // points to current symbol
+long long int instr_count;                                                                         // count of instr (used for sanity check)
+void printpattern(){cout<<"";}                                                                     // used for debugging
 
 sym::sym(string name, string t, symboltype* arrtype, int width) 
 {     //Symbol table entry
