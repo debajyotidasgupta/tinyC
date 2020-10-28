@@ -99,7 +99,7 @@ class symtable
 class quad 
 {                                                                                            // A single quad has four components:
     public:
-        string res;	                                                                         // Result
+        string res;                                                                          // Result
         string op;                                                                           // Operator
         string arg1;                                                                         // Argument 1
         string arg2;                                                                         // Argument 2    
@@ -122,7 +122,7 @@ class quadArray
 {                                                                                            // Quad Array Class declaration
     public:
         vector<quad> Array;                                                                  // Simply an Array (vector) of quads
-		void print();                                                                        // Print the quadArray
+        void print();                                                                        // Print the quadArray
 };
 
 //----------------------------------------------------------//
@@ -130,10 +130,10 @@ class quadArray
 //----------------------------------------------------------//
 class basicType 
 {                                                                                            // To denote a basic type
-	public:
-		vector<string> type;                                                                 // type name
-		vector<int> size;                                                                    // size of the type
-		void addType(string ,int );
+    public:
+        vector<string> type;                                                                 // type name
+        vector<int> size;                                                                    // size of the type
+        void addType(string ,int );
 };
 
 //----------------------------------------------//
