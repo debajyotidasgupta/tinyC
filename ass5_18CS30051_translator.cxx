@@ -95,34 +95,34 @@ sym* symtable::lookup(string name)                                              
 
 void symtable::update()                                                                            // Update the symbol table and the offsets in it
 {
-	list<symtable*> tb;                                                                            // list of tables
-	int off;
-	list<sym>::iterator it;                                                                        // list iterator for elements in the symbol table
-	it=table.begin();
-	while(it!=table.end()) 
-	{
-		if(it==table.begin()) 
-		{
-			it->offset=0;                                                                           // initial offset should be 0
-			off=it->size;
-		}
-		else 
-		{
-			it->offset=off;
-			off=it->offset+it->size;                                                                 // subsequent offset is the sum of the current offset and the space occupied by the current element
-		}
-		if(it->nested!=NULL) 
-			tb.push_back(it->nested);
-		it++;
-	}
+    list<symtable*> tb;                                                                            // list of tables
+    int off;
+    list<sym>::iterator it;                                                                        // list iterator for elements in the symbol table
+    it=table.begin();
+    while(it!=table.end()) 
+    {
+        if(it==table.begin()) 
+        {
+            it->offset=0;                                                                           // initial offset should be 0
+            off=it->size;
+        }
+        else 
+        {
+            it->offset=off;
+            off=it->offset+it->size;                                                                 // subsequent offset is the sum of the current offset and the space occupied by the current element
+        }
+        if(it->nested!=NULL) 
+            tb.push_back(it->nested);
+        it++;
+    }
 
-	list<symtable*>::iterator it1;                                                                   // list iterator for the nested tables
-	it1=tb.begin();
-	while(it1 !=tb.end())                                                                            // recursively update all the nested tables 
-	{
-	  (*it1)->update();
-	  it1++;
-	}
+    list<symtable*>::iterator it1;                                                                   // list iterator for the nested tables
+    it1=tb.begin();
+    while(it1 !=tb.end())                                                                            // recursively update all the nested tables 
+    {
+        (*it1)->update();
+        it1++;
+    }
 }
 
 void symtable::print()                                                                                // print a symbol table
