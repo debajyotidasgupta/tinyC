@@ -160,7 +160,7 @@ void symtable::print()                                                          
 
     for(list<sym>::iterator it=table.begin(); it!=table.end(); it++) {                                // iterate through all the elements in the symbol table and print their details
     
-	    std::cout << it->name;                                                                        // Print name of the symbol entry	
+        std::cout << it->name;                                                                        // Print name of the symbol entry	
         generateSpaces(15-it->name.length());
 
         string rec_type=printType(it->type);                                                          // Use PrintType to print type of the symbol entry
