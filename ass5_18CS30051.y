@@ -1,5 +1,16 @@
 %{
 
+/**
+ * Authors  : Debajyoti Dasgupta (18CS30051) [debajyotidasgupta6@gmail.com]
+ *            Siba Smarak Panigrahi (18CS10069) [sibasmarak.p@gmail.com]
+ * Language : C++14
+ * Desc     : header file for the translation statements
+ * Date     : 24.10.2020
+ * Project  : TinyC
+ * Course   : CS39003 Compilers Laboratory
+ */
+
+
 //Header Files Needed
 
 #include <iostream>              
