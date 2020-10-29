@@ -1,32 +1,31 @@
-//  arrays (multidimensional) ,  loops and nested loops
+// declarations ( variables(int, float, char), 1D array, 2D array, functions) and arithmetic operations
 
-int main()
+// global declarations
+float d = 2.3;
+int s, w[10];                            // 1D array declaration
+float z[2][2];                           // 2D array declaration
+int a = 4, *p, b;                        // pointer declaration
+void quotient(int i, float d);           // function declaration
+char c;		
+
+void main()
 {
-	int i, j, n;
-	int sum=0;
-	char a='a';
-	int p[5]; // 1D integer array
-	int dp[5][5]; // 2D integer array
-	n=5;
-	j=100;
-	i=0;
+	// Variable Declaration
+	int x=120;
+	int y=17,i,j,k,l,m,n,o;
+	char ch='c', d = 'a';                // character definitions
 
-	while(i<5) // while loop
-	{
-		i++;
-		++j;
-		p[i]=i*j;
-	}
+	// Arithmetic Operations
+	i = x+y;
+	j = x-y;
+	k = x*y;
+	l = x/y;
+	m = x%y;
+	n = x&y;
+	o = x|y;
+	
+	y = i<<2;
+	x = i>>1;
 
-	do // do-while loop
-	{
-		sum = sum + p[i];
-	}while(i<n);
-
-	for(i=0;i<n;i++)
-	{
-		for(j=0;j<n;j++)  // nested for loop
-			dp[i][j]= sum + i*j; // multi dimensional array
-	}
 	return 0;
 }
