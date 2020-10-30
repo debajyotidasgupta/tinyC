@@ -41,11 +41,14 @@ typedef Expression* Exps;
 
 extern symtable* ST;                                                                       // denotes the current Symbol Table
 extern symtable* globalST;                                                                 // denotes the Global Symbol Table
+extern symtable* parST;                                                                    // denotes the Parent of the current Symbol Table
 extern s* currSymbolPtr;                                                                   // denotes the latest encountered symbol
 extern quadArray Q;                                                                        // denotes the quad Array
 extern basicType bt;                                                                       // denotes the Type ST
-extern long long int instr_count;                                                          // denotes count of instr
+extern long long int table_count;                                                          // denotes count of nested tables
 extern bool debug_on;                                                                      // bool for printing debug output
+extern stack<symtable> tables;                                                             // stack of symbol tables
+extern string loop_name;                                                                   // get the name of the loop
 
 //----------------------------------------------------------------------//
 //      Defination of structure of each element of the symbol table     //
@@ -212,12 +215,10 @@ bool compareSymbolType(sym* &s1, sym* &s2);                                     
 bool compareSymbolType(symboltype*, symboltype*);                                            // helper function to check for same type of two symboltype objects
 
 int nextinstr();                                                                             // Returns the next instruction number
-void update_nextinstr();
 
 //----------------------------------------------------------------------//
 //           Other helper function for debugging and printing           //
 //----------------------------------------------------------------------//
-void debug();                                                                                // Used for printing debugging output
 string printType(symboltype *);                                                              // print type of symbol
 void generateSpaces(int);
 

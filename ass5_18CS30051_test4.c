@@ -12,7 +12,7 @@ int max(int x, int y)
 int min(int x, int y) 
 {
    int ans;
-   ans = x>y ? y:x; // ternery
+   ans = (x>y ? y:x); // ternery
    return ans;
 }
 

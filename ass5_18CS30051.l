@@ -77,43 +77,43 @@ PUNCTUATOR 					"["|"]"|"("|")"|"{"|"}"|"."|"->"|"++"|"--"|"&"|"*"|"+"|"-"|"~"|"
 <multi_line_comment>"*/"	{BEGIN(INITIAL);}
 
 {KEYWORD}		{
-if(strcmp(yytext,"auto")==0)			{ return AUTO; }
-if(strcmp(yytext,"break")==0)			{ return BREAK; }
-if(strcmp(yytext,"case")==0)			{ return CASE; }
-if(strcmp(yytext,"char")==0)		  	{ return CHAR; }
-if(strcmp(yytext,"const")==0)			{ return CONST; }
-if(strcmp(yytext,"continue")==0)		{ return CONTINUE; }
-if(strcmp(yytext,"default")==0)			{ return DEFAULT; }
-if(strcmp(yytext,"do")==0)				{ return DO; }
-if(strcmp(yytext,"double")==0)			{ return DOUBLE; }
-if(strcmp(yytext,"else")==0)			{ return ELSE; }
-if(strcmp(yytext,"enum")==0)			{ return ENUM; }
-if(strcmp(yytext,"extern")==0)			{ return EXTERN; }
-if(strcmp(yytext,"float")==0)			{ return FLOAT; }
-if(strcmp(yytext,"for")==0)				{ return FOR; }
-if(strcmp(yytext,"goto")==0)			{ return GOTO; }
-if(strcmp(yytext,"signed")==0)		  	{ return SIGNED; }
-if(strcmp(yytext,"struct")==0)			{ return STRUCT; }
-if(strcmp(yytext,"_Imaginary")==0)		{ return _IMAGINARY; }
-if(strcmp(yytext,"short")==0)			{ return SHORT; }
-if(strcmp(yytext,"_Complex")==0)		{ return _COMPLEX; }
-if(strcmp(yytext,"register")==0)		{ return REGISTER; }
-if(strcmp(yytext,"void")==0)			{ return VOID; }
-if(strcmp(yytext,"restrict")==0)		{ return RESTRICT; } 
-if(strcmp(yytext,"unsigned")==0)		{ return UNSIGNED; }
-if(strcmp(yytext,"return")==0)			{ return RETURN; }
-if(strcmp(yytext,"volatile")==0)		{ return VOLATILE; }
-if(strcmp(yytext,"while")==0)			{ return WHILE; }
-if(strcmp(yytext,"sizeof")==0)			{ return SIZEOF; }
-if(strcmp(yytext,"_Bool")==0)			{ return _BOOL; }
-if(strcmp(yytext,"if")==0)				{ return IF; }
-if(strcmp(yytext,"static")==0)			{ return STATIC; }
-if(strcmp(yytext,"inline")==0)			{ return INLINE; }
-if(strcmp(yytext,"int")==0)				{ return INT; }
-if(strcmp(yytext,"switch")==0)			{ return SWITCH; }
-if(strcmp(yytext,"long")==0)			{ return LONG; }
-if(strcmp(yytext,"typedef")==0)			{ return TYPEDEF; }
-if(strcmp(yytext,"union")==0)			{ return UNION; }
+	if(strcmp(yytext,"auto")==0)			{ return AUTO; }
+	if(strcmp(yytext,"break")==0)			{ return BREAK; }
+	if(strcmp(yytext,"case")==0)			{ return CASE; }
+	if(strcmp(yytext,"char")==0)		  	{ return CHAR; }
+	if(strcmp(yytext,"const")==0)			{ return CONST; }
+	if(strcmp(yytext,"continue")==0)		{ return CONTINUE; }
+	if(strcmp(yytext,"default")==0)			{ return DEFAULT; }
+	if(strcmp(yytext,"do")==0)				{ return DO; }
+	if(strcmp(yytext,"double")==0)			{ return DOUBLE; }
+	if(strcmp(yytext,"else")==0)			{ return ELSE; }
+	if(strcmp(yytext,"enum")==0)			{ return ENUM; }
+	if(strcmp(yytext,"extern")==0)			{ return EXTERN; }
+	if(strcmp(yytext,"float")==0)			{ return FLOAT; }
+	if(strcmp(yytext,"for")==0)				{ return FOR; }
+	if(strcmp(yytext,"goto")==0)			{ return GOTO; }
+	if(strcmp(yytext,"signed")==0)		  	{ return SIGNED; }
+	if(strcmp(yytext,"struct")==0)			{ return STRUCT; }
+	if(strcmp(yytext,"_Imaginary")==0)		{ return _IMAGINARY; }
+	if(strcmp(yytext,"short")==0)			{ return SHORT; }
+	if(strcmp(yytext,"_Complex")==0)		{ return _COMPLEX; }
+	if(strcmp(yytext,"register")==0)		{ return REGISTER; }
+	if(strcmp(yytext,"void")==0)			{ return VOID; }
+	if(strcmp(yytext,"restrict")==0)		{ return RESTRICT; } 
+	if(strcmp(yytext,"unsigned")==0)		{ return UNSIGNED; }
+	if(strcmp(yytext,"return")==0)			{ return RETURN; }
+	if(strcmp(yytext,"volatile")==0)		{ return VOLATILE; }
+	if(strcmp(yytext,"while")==0)			{ return WHILE; }
+	if(strcmp(yytext,"sizeof")==0)			{ return SIZEOF; }
+	if(strcmp(yytext,"_Bool")==0)			{ return _BOOL; }
+	if(strcmp(yytext,"if")==0)				{ return IF; }
+	if(strcmp(yytext,"static")==0)			{ return STATIC; }
+	if(strcmp(yytext,"inline")==0)			{ return INLINE; }
+	if(strcmp(yytext,"int")==0)				{ return INT; }
+	if(strcmp(yytext,"switch")==0)			{ return SWITCH; }
+	if(strcmp(yytext,"long")==0)			{ return LONG; }
+	if(strcmp(yytext,"typedef")==0)			{ return TYPEDEF; }
+	if(strcmp(yytext,"union")==0)			{ return UNION; }
 }
 
 {IDENTIFIER}		{
@@ -149,6 +149,7 @@ if(strcmp(yytext,"union")==0)			{ return UNION; }
 	if(strcmp(yytext,")") == 0) return ROUND_BRACKET_CLOSE;
 	if(strcmp(yytext,"{") == 0) return CURLY_BRACKET_OPEN;
 	if(strcmp(yytext,"}") == 0) return CURLY_BRACKET_CLOSE;
+	if(strcmp(yytext,"...") == 0) return ELLIPSIS;
 	if(strcmp(yytext,".") == 0) return DOT;
 	if(strcmp(yytext,"->") == 0) return IMPLIES;
 	if(strcmp(yytext,"++") == 0) return INC;

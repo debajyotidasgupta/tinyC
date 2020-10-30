@@ -1,4 +1,4 @@
-all: a.out
+test: a.out
 	
 	@echo "TRANSLATING TEST FILE 1 ==>\n"
 	./a.out < ass5_18CS30051_test1.c > ass5_18CS30051_quads1.out
