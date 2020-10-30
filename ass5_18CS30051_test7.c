@@ -23,12 +23,13 @@ int func(int price[100], int n)
 
 int main() 
 { 
+	goto L;
 	char c='a',b='x';
-	int arr[100]; 
+	int arr[100], size=0; 
 	int i,n=100;
 	for(i=0;i<n;i++)
 		arr[i]=i; 
 	int ans = 0;
-	ans = func(arr, size); 
+	L : ans = func(arr, size); 
 	return 0; 
 } 

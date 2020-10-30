@@ -23,6 +23,7 @@
 extern int yylex();
 void yyerror(string s);
 extern string var_type;
+extern vector<label> label_table;
 using namespace std;
 %}
 
@@ -44,7 +45,7 @@ using namespace std;
 //           TOKENS           //
 ////////////////////////////////
 
-%token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INLINE INT LONG REGISTER RESTRICT RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE _BOOL _COMPLEX _IMAGINARY 
+%token RESTRICT BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INLINE INT LONG RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE _BOOL _COMPLEX _IMAGINARY 
 			
 %token <symp> IDENTIFIER 		 		
 %token <intval> INTEGER_CONSTANT			
@@ -54,7 +55,7 @@ using namespace std;
 %token SQUARE_BRACKET_OPEN SQUARE_BRACKET_CLOSE
 %token ROUND_BRACKET_OPEN ROUND_BRACKET_CLOSE
 %token CURLY_BRACKET_OPEN CURLY_BRACKET_CLOSE			
-%token DOT IMPLIES INC DEC BITWISE_AND MUL ADD SUB BITWISE_NOT EXCLAIM DIV MOD SHIFT_LEFT SHIFT_RIGHT BIT_SL BIT_SR ELLIPSIS
+%token DOT IMPLIES INC DEC BITWISE_AND MUL ADD SUB BITWISE_NOT EXCLAIM DIV MOD SHIFT_LEFT SHIFT_RIGHT BIT_SL BIT_SR
 %token LTE GTE EQ NEQ BITWISE_XOR BITWISE_OR AND OR
 %token QUESTION COLON SEMICOLON DOTS ASSIGN 
 %token STAR_EQ DIV_EQ MOD_EQ ADD_EQ SUB_EQ SL_EQ SR_EQ BITWISE_AND_EQ BITWISE_XOR_EQ BITWISE_OR_EQ 
@@ -132,18 +133,21 @@ M: %empty
 
 F: %empty 
 	{
+		// rule for identifying the start of the for statement
 		loop_name = "FOR";
 	}   
 	;
 
 W: %empty 
 	{
+		// rule for identifying the start of a while loop
 		loop_name = "WHILE";
 	}   
 	;
 
 D: %empty 
 	{
+		// rule for identifyiong the start of the do while statement
 		loop_name = "DO_WHILE";
 	}   
 	;
@@ -152,10 +156,11 @@ X: %empty
 	{
 		/**
 		  * change the current symbol pointer
+		  * This will be used for nested block statements
 		  */
-		string name = ST->name+"."+loop_name+"$"+to_string(table_count);
-		table_count++;
-		sym* s = ST->lookup(name);
+		string name = ST->name+"."+loop_name+"$"+to_string(table_count); // give name for nested table
+		table_count++; // increment the table count
+		sym* s = ST->lookup(name); // lookup the table for new entry
 		s->nested = new symtable(name);
 		s->nested->parent = ST;
 		s->name = name;
@@ -314,10 +319,7 @@ argument_expression_list: assignment_expression
 	}
 	;
 
-unary_expression: postfix_expression   
-	{ 
-		$$=$1; // Equate $$ and $1
-	} 					  
+unary_expression: postfix_expression { $$=$1; /*Equate $$ and $1*/} 					  
 	| INC unary_expression                           
 	{  	
 		//simply add 1
@@ -505,7 +507,7 @@ relational_expression: shift_expression   { $$=$1; }              //simply equat
 	{
 		if(!compareSymbolType($1->loc, $3->loc)) 
 		{
-			cout << "Type Error in Program"<< endl;
+			yyerror("Type Error in Program");
 		}
 		else 
 		{      //check compatible types									
@@ -522,7 +524,7 @@ relational_expression: shift_expression   { $$=$1; }              //simply equat
 		// similar to above, check compatible types,make new lists and emit
 		if(!compareSymbolType($1->loc, $3->loc)) 
 		{
-			cout << "Type Error in Program"<< endl;
+			yyerror("Type Error in Program");
 		}
 		else 
 		{	
@@ -650,10 +652,7 @@ inclusive_or_expression: exclusive_or_expression { $$=$1; }			//simply equate
 	| inclusive_or_expression BITWISE_OR exclusive_or_expression          
 	{ 
 		if(!compareSymbolType($1->loc, $3->loc))   //same as and_expression: check compatible types, make non-boolean expression and convert bool to int and emit
-		{
-			
-			cout << "Type Error in Program"<< endl;
-		}
+		{ yyerror("Type Error in Program"); }
 		else 
 		{
 			convertBoolToInt($1);		
@@ -667,30 +666,28 @@ inclusive_or_expression: exclusive_or_expression { $$=$1; }			//simply equate
 	;
 
 logical_and_expression: inclusive_or_expression  { $$=$1; }				//simply equate
-	| logical_and_expression N AND M inclusive_or_expression      //backpatching involved here
+	| logical_and_expression AND M inclusive_or_expression      //backpatching involved here
 	{ 
-		convertIntToBool($5);         //convert inclusive_or_expression int to bool	
-		backpatch($2->nextlist, nextinstr());        //$2->nextlist goes to next instruction
-		convertIntToBool($1);                  //convert logical_and_expression to bool
-		$$ = new Expression();     //make new boolean expression 
+		convertIntToBool($4);                                  //convert inclusive_or_expression int to bool	
+		convertIntToBool($1);                                  //convert logical_and_expression to bool
+		$$ = new Expression();                                 //make new boolean expression 
 		$$->type = "bool";
-		backpatch($1->truelist, $4);        //if $1 is true, we move to $5
-		$$->truelist = $5->truelist;        //if $5 is also true, we get truelist for $$
-		$$->falselist = merge($1->falselist, $5->falselist);    //merge their falselists
+		backpatch($1->truelist, $3);                           //if $1 is true, we move to $5
+		$$->truelist = $4->truelist;                           //if $5 is also true, we get truelist for $$
+		$$->falselist = merge($1->falselist, $4->falselist);   //merge their falselists
 	}
 	;
 
 logical_or_expression: logical_and_expression   { $$=$1; }				//simply equate
-	| logical_or_expression N OR M logical_and_expression        //backpatching involved here
+	| logical_or_expression OR M logical_and_expression        //backpatching involved here
 	{ 
-		convertIntToBool($5);			 //convert logical_and_expression int to bool	
-		backpatch($2->nextlist, nextinstr());	//$2->nextlist goes to next instruction
-		convertIntToBool($1);			//convert logical_or_expression to bool
-		$$ = new Expression();			//make new boolean expression
+		convertIntToBool($4);			 //convert logical_and_expression int to bool	
+		convertIntToBool($1);			 //convert logical_or_expression to bool
+		$$ = new Expression();			 //make new boolean expression
 		$$->type = "bool";
-		backpatch($1->falselist, $4);		//if $1 is true, we move to $5
-		$$->truelist = merge($1->truelist, $5->truelist);		//merge their truelists
-		$$->falselist = $5->falselist;		 	//if $5 is also false, we get falselist for $$
+		backpatch($1->falselist, $3);		//if $1 is true, we move to $5
+		$$->truelist = merge($1->truelist, $4->truelist);		//merge their truelists
+		$$->falselist = $4->falselist;		 	//if $5 is also false, we get falselist for $$
 	}
 	;
 
@@ -698,7 +695,6 @@ conditional_expression: logical_or_expression {$$=$1;}       //simply equate
 	| logical_or_expression N QUESTION M expression N COLON M conditional_expression 
 	{
 		//normal conversion method to get conditional expressions
-		cout<<"HOLA"<<endl;
 		$$->loc = gentemp($5->loc->type);       //generate temporary for expression
 		$$->loc->update($5->loc->type);
 		emit("=", $$->loc->name, $9->loc->name);      //make it equal to sconditional_expression
@@ -788,8 +784,6 @@ init_declarator: declarator {$$=$1;}
 
 storage_class_specifier: EXTERN  { }
 	| STATIC  { }
-	| AUTO   { }
-	| REGISTER   { }
 	;
 
 type_specifier: VOID   { var_type="void"; }           //store the latest type in var_type
@@ -1018,7 +1012,20 @@ loop_statement: labeled_statement   {  }
 	| jump_statement   { $$=$1; }
 	;
 
-labeled_statement: IDENTIFIER COLON statement   {  }
+labeled_statement: IDENTIFIER COLON M statement   
+	{  
+		$$ = $4;
+		label *s = find_label($1->name);
+		if(s!=nullptr){
+			s->addr = $3;
+			backpatch(s->nextlist,s->addr);
+		}else{
+			s = new label($1->name);
+			s->addr = nextinstr();
+			s->nextlist = makelist($3);
+			label_table.push_back(*s);
+		}
+	}
 	| CASE constant_expression COLON statement   {  }
 	| DEFAULT COLON statement   {  }
 	;
@@ -1099,13 +1106,22 @@ iteration_statement: WHILE W ROUND_BRACKET_OPEN X changetable M expression ROUND
 		loop_name = "";
 		changeTable(ST->parent);
 	}
-	| DO D M statement M WHILE ROUND_BRACKET_OPEN expression ROUND_BRACKET_CLOSE SEMICOLON      //do statement
+	| DO D M loop_statement M WHILE ROUND_BRACKET_OPEN expression ROUND_BRACKET_CLOSE SEMICOLON      //do statement
 	{
 		$$ = new Statement();     //create statement	
 		convertIntToBool($8);      //convert to bool
 		backpatch($8->truelist, $3);						// M1 to go back to statement if expression is true
 		backpatch($4->nextlist, $5);						// M2 to go to check expression if statement is complete
 		$$->nextlist = $8->falselist;                       //move out if statement is false
+		loop_name = "";
+	}
+	| DO D CURLY_BRACKET_OPEN M block_item_list_opt CURLY_BRACKET_CLOSE M WHILE ROUND_BRACKET_OPEN expression ROUND_BRACKET_CLOSE SEMICOLON      //do statement
+	{
+		$$ = new Statement();     //create statement	
+		convertIntToBool($10);      //convert to bool
+		backpatch($10->truelist, $4);						// M1 to go back to statement if expression is true
+		backpatch($5->nextlist, $7);						// M2 to go to check expression if statement is complete
+		$$->nextlist = $10->falselist;                       //move out if statement is false
 		loop_name = "";
 	}
 	| FOR F ROUND_BRACKET_OPEN X changetable declaration M expression_statement M expression N ROUND_BRACKET_CLOSE M loop_statement     //for loop
@@ -1162,9 +1178,24 @@ iteration_statement: WHILE W ROUND_BRACKET_OPEN X changetable M expression ROUND
 	}
 	;
 
-jump_statement: GOTO IDENTIFIER SEMICOLON { $$ = new Statement(); }            //not to be modelled
-	| CONTINUE SEMICOLON { $$ = new Statement(); }			   //not to be modelled
-	| BREAK SEMICOLON { $$ = new Statement(); }				 //not to be modelled
+jump_statement: GOTO IDENTIFIER SEMICOLON { 
+		$$ = new Statement();
+		label *l = find_label($2->name);
+		if(l){
+			emit("goto","");
+			list<int>lst = makelist(nextinstr());
+			l->nextlist = merge(l->nextlist,lst);
+			if(l->addr!=-1)
+				backpatch(l->nextlist,l->addr);
+		} else {
+			l = new label($2->name);
+			l->nextlist = makelist(nextinstr());
+			emit("goto","");
+			label_table.push_back(*l);
+		}
+	}           
+	| CONTINUE SEMICOLON { $$ = new Statement(); }			  
+	| BREAK SEMICOLON { $$ = new Statement(); }
 	| RETURN expression SEMICOLON               
 	{
 		$$ = new Statement();	
@@ -1192,6 +1223,7 @@ function_definition:declaration_specifiers declarator declaration_list_opt chang
 		int next_instr=0;	 	
 		ST->parent=globalST;
 		table_count = 0;
+		label_table.clear();
 		changeTable(globalST);                     //once we come back to this at the end, change the table to global Symbol table
 	}
 	;

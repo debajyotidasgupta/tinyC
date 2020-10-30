@@ -25,6 +25,7 @@ using namespace std;
 
 class sym;                                                                                 // stands for an entry in ST
 class quad;                                                                                // stands for a single entry in the quad Array
+class label;                                                                               // stands for a single label entry in the label table
 class symtable;                                                                            // stands for ST
 class basicType;                                                                           // stands for the basic type data
 class quadArray;                                                                           // stands for the Array of quads
@@ -47,8 +48,8 @@ extern quadArray Q;                                                             
 extern basicType bt;                                                                       // denotes the Type ST
 extern long long int table_count;                                                          // denotes count of nested tables
 extern bool debug_on;                                                                      // bool for printing debug output
-extern stack<symtable> tables;                                                             // stack of symbol tables
 extern string loop_name;                                                                   // get the name of the loop
+extern vector<label>label_table;                                                           // table to store the labels
 
 //----------------------------------------------------------------------//
 //      Defination of structure of each element of the symbol table     //
@@ -65,6 +66,19 @@ class sym
           
         sym (string , string t="int", symboltype* ptr = NULL, int width = 0);              // constructor
         sym* update(symboltype*);                                                          // Method to update different fields of an existing entry.
+};
+
+//--------------------------------------------------//
+//      Defination of the label symbol              //
+//--------------------------------------------------//
+class label                                                                                // class of label symbols
+{
+    public:
+        string name;                                                                       // stores the name of the label
+        int addr;                                                                          // stores the address the label is pointing to
+        list<int> nextlist;                                                                // list of dangling goto statements
+
+        label(string _name, int _addr = -1);                                               // label
 };
 
 //--------------------------------------------------//
@@ -202,6 +216,8 @@ list<int> merge (list<int> &l1, list <int> &l2);                                
 //----------------------------------------------------------------------//
 //          Other helper functions required for TAC generation          //
 //----------------------------------------------------------------------//
+
+label* find_label(string name);
 //------------- Type checking and Type conversion functions -------------
 string convertIntToString(int);                                                              // helper function to convert integer to string
 string convertFloatToString(float);                                                          // helper function to convert float to string
