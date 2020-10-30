@@ -13,187 +13,150 @@
 	#include <string.h>
 	#include "ass5_18CS30051_translator.h"
 	#include "ass5_18CS30051.tab.h"
+    extern YYSTYPE yylval;
+    extern int line;
+    int line = 1;
 %}
 /*Definition of regular expression*/
 
 %option noyywrap
 
-/* REGEX DEFINITION */
 
-/*KEYWORDS*/
+/* Regular Expression Definations */
+LETTER          [a-zA-Z]
+DIGIT           [0-9]
+NON_ZERO        [1-9]
+DIGIT_SEQ       {DIGIT}{DIGIT}*
+ESCAPE_SEQ      "\\\'"|"\\\""|"\\\?"|"\\\\"|"\\a"|"\\b"|"\\f"|"\\n"|"\\r"|"\\t"|"\\v"
+C_CHAR          [^\'\\\n]|{ESCAPE_SEQ}
+S_CHAR          [^\"\\\n]|{ESCAPE_SEQ}
+CHAR_SEQ        {C_CHAR}{C_CHAR}*
+STRING_SEQ      {S_CHAR}{S_CHAR}*
 
-KEYWORD 					"auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"inline"|"int"|"long"|"register"|"restrict"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"|"_Bool"|"_Complex"|"_Imaginary"
-	
-/*IDENTIFIER*/
+IDENTIFIER      ({LETTER}|"_")({LETTER}|{DIGIT}|"_")*
 
-DIGIT						[0-9]
-IDENTIFIER_NONDIGIT 		[a-zA-Z]|"_"
-IDENTIFIER 					{IDENTIFIER_NONDIGIT}({IDENTIFIER_NONDIGIT}|{DIGIT})*
+FRAC            {DIGIT_SEQ}\.|\.{DIGIT_SEQ}|{DIGIT_SEQ}\.{DIGIT_SEQ}
+FLOAT_CONST     ({FRAC}|{DIGIT_SEQ})([Ee]([-+]{DIGIT_SEQ}|{DIGIT_SEQ}))|{FRAC}|"0"*\."0"*
+INT_CONST       {NON_ZERO}{DIGIT}*|"0"+
+CHAR_CONST      \'{CHAR_SEQ}\'
 
-/*CONSTANTS*/
-
-INTEGER_CONSTANT			{NONZERO_INTEGER_CONSTANT}|"0"
-NONZERO_INTEGER_CONSTANT	{NONZERO_DIGIT}({NONZERO_DIGIT}|{DIGIT})*
-NONZERO_DIGIT				[1-9]
-
-
-SIGN 						"+"|"-"
-DIGIT_SEQUENCE				{DIGIT}({DIGIT})*
-EXPONENT_PART				("e"{SIGN}?{DIGIT_SEQUENCE})|("E"{SIGN}?{DIGIT_SEQUENCE})
-FRACTIONAL_CONSTANT			({DIGIT_SEQUENCE}?"."{DIGIT_SEQUENCE})|({DIGIT_SEQUENCE}".")
-FLOATING_CONSTANT			({FRACTIONAL_CONSTANT}{EXPONENT_PART}?)|({DIGIT_SEQUENCE}{EXPONENT_PART})
-
-
-ENUMERATION_CONSTANT		{IDENTIFIER}
-
-
-ESCAPE_SEQUENCE				"\'"|"\""|"\?"|"\\"|"\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v"
-C_CHAR 						{ESCAPE_SEQUENCE}|[^("\'"|"\\"|"\n")]
-C_CHAR_SEQUENCE				{C_CHAR}+
-CHARACTER_CONSTANT			'(\\[tvrnafb\\]|[^\\'])'
-
-
-/*STRING_LITERALS*/
-S_CHAR  					{ESCAPE_SEQUENCE}|[^("\""|"\\"|"\n")]
-S_CHAR_SEQUENCE				{S_CHAR}+
-STRING_LITERAL 				"\""{S_CHAR_SEQUENCE}?"\""
-
-
-/*PUNCTUATORS*/
-PUNCTUATOR 					"["|"]"|"("|")"|"{"|"}"|"."|"->"|"++"|"--"|"&"|"*"|"+"|"-"|"~"|"!"|"/"|"%"|"<<"|">>"|"<"|">"|"<="|">="|"=="|"!="|"^"|"|"|"&&"|"||"|"?"|":"|";"|"..."|"="|"*="|"/="|"%="|"+="|"-="|"<<="|">>="|"&="|"^="|"|="|","|"#"
-
-%x single_line_comment multi_line_comment
+STRING          \"{STRING_SEQ}\"|\"\"
+COMMENT_LINE    "//".*
+COMMENT_MULTI   "/*"([^*]|\*+[^/*])*\**(\*"/")? 
+WS              [ \t]
+NEWLINE         [\n]
 
 %%
 
-"//"			{BEGIN(single_line_comment);}
-<single_line_comment>[^\n]	{}
-<single_line_comment>"\n"		{BEGIN(INITIAL);}
-<single_line_comment><<EOF>>	{BEGIN(INITIAL);}
+{COMMENT_LINE}          { /*printf("This single line comment will be ignored by the parser\n");*/ }
+{COMMENT_MULTI}         { /*printf("This multi line comment will be ignored by the parser\n");*/  }
 
-"/*"			{BEGIN(multi_line_comment);}
-<multi_line_comment>[^*]	{}
-<multi_line_comment>"*"[^/]	{}
-<multi_line_comment>"*/"	{BEGIN(INITIAL);}
+"if"                    { return IF;       }
+"do"                    { return DO;       }
+"for"                   { return FOR;      }
+"int"                   { return INT;      }
+"long"                  { return LONG;     }
+"else"                  { return ELSE;     }
+"char"                  { return CHAR;     }
+"case"                  { return CASE;     }
+"goto"                  { return GOTO;     }
+"void"                  { return VOID;     }
+"short"                 { return SHORT;    }
+"float"                 { return FLOAT;    }
+"break"                 { return BREAK;    }
+"const"                 { return CONST;    }
+"union"                 { return UNION;    }
+"while"                 { return WHILE;    }
+"switch"                { return SWITCH;   }
+"static"                { return STATIC;   }
+"struct"                { return STRUCT;   }
+"extern"                { return EXTERN;   }
+"sizeof"                { return SIZEOF;   }
+"inline"                { return INLINE;   }
+"double"                { return DOUBLE;   }
+"return"                { return RETURN;   }
+"typedef"               { return TYPEDEF;  }
+"default"               { return DEFAULT;  }
+"volatile"              { return VOLATILE; }
+"restrict"              { return RESTRICT; }
+"continue"              { return CONTINUE; }
 
-{KEYWORD}		{
-if(strcmp(yytext,"auto")==0)			{ return AUTO; }
-if(strcmp(yytext,"break")==0)			{ return BREAK; }
-if(strcmp(yytext,"case")==0)			{ return CASE; }
-if(strcmp(yytext,"char")==0)		  	{ return CHAR; }
-if(strcmp(yytext,"const")==0)			{ return CONST; }
-if(strcmp(yytext,"continue")==0)		{ return CONTINUE; }
-if(strcmp(yytext,"default")==0)			{ return DEFAULT; }
-if(strcmp(yytext,"do")==0)				{ return DO; }
-if(strcmp(yytext,"double")==0)			{ return DOUBLE; }
-if(strcmp(yytext,"else")==0)			{ return ELSE; }
-if(strcmp(yytext,"enum")==0)			{ return ENUM; }
-if(strcmp(yytext,"extern")==0)			{ return EXTERN; }
-if(strcmp(yytext,"float")==0)			{ return FLOAT; }
-if(strcmp(yytext,"for")==0)				{ return FOR; }
-if(strcmp(yytext,"goto")==0)			{ return GOTO; }
-if(strcmp(yytext,"signed")==0)		  	{ return SIGNED; }
-if(strcmp(yytext,"struct")==0)			{ return STRUCT; }
-if(strcmp(yytext,"_Imaginary")==0)		{ return _IMAGINARY; }
-if(strcmp(yytext,"short")==0)			{ return SHORT; }
-if(strcmp(yytext,"_Complex")==0)		{ return _COMPLEX; }
-if(strcmp(yytext,"register")==0)		{ return REGISTER; }
-if(strcmp(yytext,"void")==0)			{ return VOID; }
-if(strcmp(yytext,"restrict")==0)		{ return RESTRICT; } 
-if(strcmp(yytext,"unsigned")==0)		{ return UNSIGNED; }
-if(strcmp(yytext,"return")==0)			{ return RETURN; }
-if(strcmp(yytext,"volatile")==0)		{ return VOLATILE; }
-if(strcmp(yytext,"while")==0)			{ return WHILE; }
-if(strcmp(yytext,"sizeof")==0)			{ return SIZEOF; }
-if(strcmp(yytext,"_Bool")==0)			{ return _BOOL; }
-if(strcmp(yytext,"if")==0)				{ return IF; }
-if(strcmp(yytext,"static")==0)			{ return STATIC; }
-if(strcmp(yytext,"inline")==0)			{ return INLINE; }
-if(strcmp(yytext,"int")==0)				{ return INT; }
-if(strcmp(yytext,"switch")==0)			{ return SWITCH; }
-if(strcmp(yytext,"long")==0)			{ return LONG; }
-if(strcmp(yytext,"typedef")==0)			{ return TYPEDEF; }
-if(strcmp(yytext,"union")==0)			{ return UNION; }
-}
+"..."                   { return DOTS;                 }
+"<<="                   { return SL_EQ;                }
+">>="                   { return SR_EQ;                }
+"++"                    { return INC;                  }
+"--"                    { return DEC;                  }
+"->"                    { return IMPLIES;              }
+"<<"                    { return SHIFT_LEFT;           }
+">>"                    { return SHIFT_RIGHT;          }
+"<="                    { return LTE;                  }
+">="                    { return GTE;                  }
+"=="                    { return EQ;                   }
+"!="                    { return NEQ;                  }
+"&&"                    { return AND;                  }
+"||"                    { return OR;                   }
+"*="                    { return STAR_EQ;              }
+"/="                    { return DIV_EQ;               }
+"%="                    { return MOD_EQ;               }
+"+="                    { return ADD_EQ;               }
+"-="                    { return SUB_EQ;               }
+"&="                    { return BITWISE_AND_EQ;       }
+"^="                    { return BITWISE_XOR_EQ;       }
+"|="                    { return BITWISE_OR_EQ;        }
 
-{IDENTIFIER}		{
-	yylval.symp = ST->lookup(yytext);
-	return IDENTIFIER;
-}
+"["                     { return SQUARE_BRACKET_OPEN;  }
+"]"                     { return SQUARE_BRACKET_CLOSE; }
+"("                     { return ROUND_BRACKET_OPEN;   }
+")"                     { return ROUND_BRACKET_CLOSE;  }
+"{"                     { return CURLY_BRACKET_OPEN;   }
+"}"                     { return CURLY_BRACKET_CLOSE;  }
 
-{INTEGER_CONSTANT}		{
-	yylval.intval = atoi(yytext);
-	return INTEGER_CONSTANT;
-}
+";"                     { return SEMICOLON;  }
 
-{FLOATING_CONSTANT}	{
-	yylval.char_value = yytext;
-	return FLOATING_CONSTANT;
-}
+"#"                     { return HASH;       }
+"."                     { return DOT;        }
+"&"                     { return BITWISE_AND;}
+"*"                     { return MUL;        }
+"+"                     { return ADD;        }
+"-"                     { return SUB;        }
+"~"                     { return BITWISE_NOT;}
+"!"                     { return EXCLAIM;    }
+"/"                     { return DIV;        }
+"%"                     { return MOD;        }
+"<"                     { return BIT_SL;     }
+">"                     { return BIT_SR;     }
+","                     { return COMMA;      }
+"="                     { return ASSIGN;     }
+"?"                     { return QUESTION;   }
+"^"                     { return BITWISE_XOR;}
+"|"                     { return BITWISE_OR; }
+":"                     { return COLON;      }
 
-{CHARACTER_CONSTANT}		{
-	yylval.char_value = yytext;
-	return CHARACTER_CONSTANT;
-}
+{INT_CONST}             { 
+	                        yylval.intval = atoi(yytext);
+							return INTEGER_CONSTANT; /* Constant Rule */ 
+                        }
+{CHAR_CONST}            { 
+	                        yylval.char_value = yytext;
+							return CHARACTER_CONSTANT; /* Constant Rule */ 
+						}
+{FLOAT_CONST}           { 
+	                        yylval.char_value = yytext;
+	                        return FLOATING_CONSTANT; /* Constant Rule */ 
+						}
 
-{STRING_LITERAL}			{
-	yylval.char_value = yytext;
-	return STRING_LITERAL;
-}
+{IDENTIFIER}            { 
+	                        yylval.symp = ST->lookup(yytext);
+							return IDENTIFIER; /* Identifier Rule */ 
+						}
 
+{STRING}                { 
+	                        yylval.char_value = yytext;
+							return STRING_LITERAL; /* String-literal */ 
+						}
 
-{PUNCTUATOR}	{
-	if(strcmp(yytext,"[") == 0) return SQUARE_BRACKET_OPEN;
-	if(strcmp(yytext,"]") == 0) return SQUARE_BRACKET_CLOSE;
-	if(strcmp(yytext,"(") == 0) return ROUND_BRACKET_OPEN;
-	if(strcmp(yytext,")") == 0) return ROUND_BRACKET_CLOSE;
-	if(strcmp(yytext,"{") == 0) return CURLY_BRACKET_OPEN;
-	if(strcmp(yytext,"}") == 0) return CURLY_BRACKET_CLOSE;
-	if(strcmp(yytext,".") == 0) return DOT;
-	if(strcmp(yytext,"->") == 0) return IMPLIES;
-	if(strcmp(yytext,"++") == 0) return INC;
-	if(strcmp(yytext,"--") == 0) return DEC;
-	if(strcmp(yytext,"&") == 0) return BITWISE_AND;
-	if(strcmp(yytext,"*") == 0) return MUL;
-	if(strcmp(yytext,"+") == 0) return ADD;
-	if(strcmp(yytext,"-") == 0) return SUB;
-	if(strcmp(yytext,"~") == 0) return BITWISE_NOT;
-	if(strcmp(yytext,"!") == 0) return EXCLAIM;
-	if(strcmp(yytext,"/") == 0) return DIV;
-	if(strcmp(yytext,"%") == 0) return MOD;
-	if(strcmp(yytext,"<<") == 0) return SHIFT_LEFT;
-	if(strcmp(yytext,">>") == 0) return SHIFT_RIGHT;
-	if(strcmp(yytext,"<") == 0) return BIT_SL;
-	if(strcmp(yytext,">") == 0) return BIT_SR;
-	if(strcmp(yytext,"<=") == 0) return LTE;
-	if(strcmp(yytext,">=") == 0) return GTE;
-	if(strcmp(yytext,"==") == 0) return EQ;
-	if(strcmp(yytext,"!=") == 0) return NEQ;
-	if(strcmp(yytext,"^") == 0) return BITWISE_XOR;
-	if(strcmp(yytext,"|") == 0) return BITWISE_OR;
-	if(strcmp(yytext,"&&") == 0) return AND;
-	if(strcmp(yytext,"||") == 0) return OR;
-	if(strcmp(yytext,"?") == 0) return QUESTION;
-	if(strcmp(yytext,":") == 0) return COLON;
-	if(strcmp(yytext,";") == 0) return SEMICOLON;
-	if(strcmp(yytext,"...") == 0) return DOTS;
-	if(strcmp(yytext,"=") == 0) return ASSIGN;
-	if(strcmp(yytext,"*=") == 0) return STAR_EQ;
-	if(strcmp(yytext,"/=") == 0) return DIV_EQ;
-	if(strcmp(yytext,"%=") == 0) return MOD_EQ;
-	if(strcmp(yytext,"+=") == 0) return ADD_EQ;
-	if(strcmp(yytext,"-=") == 0) return SUB_EQ;
-	if(strcmp(yytext,"<<=") == 0) return SL_EQ;
-	if(strcmp(yytext,">>=") == 0) return SR_EQ;
-	if(strcmp(yytext,"&=") == 0) return BITWISE_AND_EQ;
-	if(strcmp(yytext,"^=") == 0) return BITWISE_XOR_EQ;
-	if(strcmp(yytext,"|=") == 0) return BITWISE_OR_EQ;
-	if(strcmp(yytext,",") == 0) return COMMA;
-	if(strcmp(yytext,"#") == 0) return HASH;
-}
+{WS}                    { /*White-space Rule*/ }
 
-"\n"|" "|"\t"	{
+{NEWLINE}               { /* printf("\n\n============================== Parsing line %d ============================== \n\n", ++line ); */ }
 
-}
 %%
-		

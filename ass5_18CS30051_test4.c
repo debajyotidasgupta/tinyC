@@ -6,30 +6,32 @@ int max(int x, int y)
    	ans=x;
    else
    	ans=y;
+   if(ans<0)
+    ans = -ans;
    return ans;
 }
 
 int min(int x, int y) 
 {
    int ans;
-   ans = x>y ? y:x; // ternery
+   ans = x > y ? y : x; // ternery
+   max(x,y);
    return ans;
 }
 
-int difference(int x, int y)
-{
-	int i,j,diff;
-	i = max(x,y);	// nested function calls
-	j = min(x,y);
-	diff=i-j;
-	return diff;
+int a;
+
+int cal(int a, int b){
+	int i, j, d;
+	i = min(a, b);
+	j = max(a, b);
+	d = j - i;
+	return d;
 }
 
-int main() 
-{
-	int a,b,diff;
-	a=10;
-	b=5;
-	diff=difference(a,b);
+int main(){
+	int a, b, d;
+	a = 10, b = 5;
+	d = cal(a,b);
 	return 0;
 }

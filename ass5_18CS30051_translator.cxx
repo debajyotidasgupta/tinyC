@@ -23,8 +23,11 @@ basicType bt;                                                                   
 bool debug_on;                                                                                     // bool for printing debug output
 string var_type;                                                                                   // Stores latest type
 symtable* globalST;                                                                                // Global Symbol Table
+symtable* parST;                                                                                   // denotes the Parent of the current Symbol Table
 sym* currSymbolPtr;                                                                                // points to current symbol
-long long int instr_count;                                                                         // count of instr (used for sanity check)
+long long int table_count;                                                                         // count of table
+string loop_name;                                                                                  // get the name of the loop
+vector<label>label_table;                                                                          // table to store the labels
 
 
 //-----------------------------------------------------------//
@@ -58,6 +61,11 @@ sym* sym::update(symboltype* t)
 }
 
 //------------------------------------------------------//
+//      Implementation of the Label Symbol functions    //
+//------------------------------------------------------//
+label::label(string _name, int _addr):name(_name),addr(_addr){}
+
+//------------------------------------------------------//
 //      Implementation of the Symbol Table functions    //
 //------------------------------------------------------//
 symtable::symtable(string name)                                                                    // constructor for a symbol table
@@ -66,7 +74,7 @@ symtable::symtable(string name)                                                 
     count=0;                                                                                       // Put count of number of temporary variables as 0
 }
 
-sym* symtable::lookup(string name)                                                                 // Lookup an symbol in the symbol table, whether it exists or not
+sym* symtable::lookup(string name)                                                 // Lookup an symbol in the symbol table, whether it exists or not
 {
     sym* symbol;
     list<sym>::iterator it;                                                                        // it is list iterator (pointer) for list of symbols
@@ -77,7 +85,9 @@ sym* symtable::lookup(string name)                                              
             return &(*it);                                                                         // if the name of the symbol is found in the table then return the address of the element
         it++;                                                                                      // otherwise continue the search
     }
-    
+
+    sym *ptr = nullptr;
+    if(this->parent)ptr = this->parent->lookup(name);
 	/**
 	 * If the symbol has not been found 
 	 * in the symbol table then craete 
@@ -87,10 +97,12 @@ sym* symtable::lookup(string name)                                              
 	 * Return the pointer to this 
 	 * new element inserted
 	 */
-
-    symbol = new sym(name);
-    table.push_back(*symbol);                                                                      // push the symbol into the table
-    return &table.back();                                                                          // return the symbol
+    if(ST == this and !ptr){
+        symbol = new sym(name);
+        table.push_back(*symbol);                                                                  // push the symbol into the table
+        return &table.back();                                                                      // return the symbol
+    } else if(ptr) return ptr;
+    return nullptr;
 }
 
 void symtable::update()                                                                            // Update the symbol table and the offsets in it
@@ -129,20 +141,20 @@ void symtable::print()                                                          
 {
     int next_instr=0;
     list<symtable*> tb;                                                                               // list of tables
-    for(int t1=0;t1<50;t1++) std::cout<<"__";                                                         // print lines for the border of the table
+    for(int t1=0;t1<65;t1++) std::cout<<"__";                                                         // print lines for the border of the table
     std::cout<<std::endl;
 
     std::cout << "Table Name: " << (*this).name ;
-	generateSpaces(23-this->name.length());
+	generateSpaces(53-this->name.length());
 	std::cout << " Parent Name: ";                                                                    // table name
     if(((*this).parent==NULL)) std::cout<<"NULL"<<std::endl;                                          // If no parent for the current table print NULL  
     else std::cout<<(*this).parent->name<<std::endl;                                                  // print the name for the current table
-    for(int x=0; x<50; x++) std::cout<<"__";                                                          // Design formatting
+    for(int x=0; x<65; x++) std::cout<<"__";                                                          // Design formatting
     std::cout<<std::endl;
     
 	//----------- Print the headers for the table --------------
     std::cout<<"Name";                                                                                // Name of the entry in the symbol table
-    generateSpaces(11);
+    generateSpaces(36);
 
     std::cout<<"Type";                                                                                // Type of the symbol table entry
     generateSpaces(16);
@@ -163,7 +175,7 @@ void symtable::print()                                                          
     for(list<sym>::iterator it=table.begin(); it!=table.end(); it++) {                                // iterate through all the elements in the symbol table and print their details
     
         std::cout << it->name;                                                                        // Print name of the symbol entry	
-        generateSpaces(15-it->name.length());
+        generateSpaces(40-it->name.length());
 
         string rec_type=printType(it->type);                                                          // Use PrintType to print type of the symbol entry
         std::cout << rec_type;
@@ -187,7 +199,7 @@ void symtable::print()                                                          
         }
     }
  
-    for(int i=0;i<100;i++) std::cout<<"-";
+    for(int i=0;i<130;i++) std::cout<<"-";
     std::cout<<"\n\n";
     for(list<symtable*>::iterator it=tb.begin(); it !=tb.end();++it) 
     {
@@ -321,11 +333,11 @@ void basicType::addType(string t, int s)                                        
 //--------------------------------------------------------------//
 void quadArray::print()                                                                                // print the quad Array i.e the list of TAC
 {
-    for(int i=0;i<50;i++)  std::cout<<"__";
+    for(int i=0;i<60;i++)  std::cout<<"__";
     std::cout<<std::endl;
 
-    std::cout<<"Three Address Code:"<<std::endl;                                                       // print all the three address codes TAC
-    for(int i=0;i<50;i++) std::cout<<"__";
+    std::cout<<"THREE ADDRESS CODE (TAC): "<<std::endl;                                                       // print all the three address codes TAC
+    for(int i=0;i<60;i++) std::cout<<"__";
     std::cout<<std::endl;    
     
     int j=0;
@@ -345,7 +357,7 @@ void quadArray::print()                                                         
         }
         it++;j++;
     }
-    for(int i=0;i<50;i++) std::cout<<"__";                                                              // End of printing of the TAC
+    for(int i=0;i<65;i++) std::cout<<"__";                                                              // End of printing of the TAC
     std::cout<<std::endl;
 }
 
@@ -399,6 +411,14 @@ sym* gentemp(symboltype* t, string str_new)
     (*s).val = str_new;
     ST->table.push_back(*s);                                                                            // push the newly created symbol in the Symbol table
     return &ST->table.back();
+}
+
+
+label* find_label(string _name){
+    for(vector<label>::iterator it=label_table.begin(); it!=label_table.end(); it++){
+        if(it->name==_name)return &(*it);
+    }
+    return nullptr;
 }
 
 //-------------------------------------------------------------//
@@ -552,24 +572,9 @@ bool compareSymbolType(symboltype* t1,symboltype* t2)                           
     else return compareSymbolType(t1->arrtype,t2->arrtype);                                             // otherwise check their Array type
 }
 
-void update_nextinstr()                                                                                 // debug output
-{
-    instr_count++;
-    if(debug_on==1)
-    {
-        std::cout<<"Current Line Number:"<<instr_count<<std::endl;
-        std::cout<<"Press [ENTER] to continue:";
-        cin.get();
-    }
-}
-
 //----------------------------------------------------------------------//
 //           Other helper function for debugging and printing           //
 //----------------------------------------------------------------------//
-void debug()
-{
-    if(debug_on==1)std::cout<<instr_count<<std::endl;
-}
 
 void generateSpaces(int n)                                                                              // Generate required number of spaces
 {
@@ -607,6 +612,7 @@ string printType(symboltype* t)                                                 
         return bt.type[6]+"("+str+","+printType(t->arrtype)+")";
     }
     else if(t->type.compare("func")==0) return bt.type[7];
+    else if(t->type.compare("block")==0) return bt.type[8];
     else return "NA";
 }
 
@@ -625,11 +631,16 @@ int main()
     bt.addType("ptr",4);
     bt.addType("arr",0);
     bt.addType("func",0);
+    bt.addType("block",0);
 
-    instr_count = 0;                                                                                    // count of instr (used for sanity check)
+    label_table.clear();
+
+    table_count = 0;                                                                                    // count of nested table
     debug_on= 0;                                                                                        // debugging is off
     globalST=new symtable("Global");                                                                    // Global Symbol Table
     ST=globalST;
+    parST=nullptr;
+    loop_name = "";
 
     yyparse();                                                                                          // initialize parse
     globalST->update();                                                                                 // update the global Symbol Table

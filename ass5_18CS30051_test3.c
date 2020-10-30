@@ -8,6 +8,28 @@ int a = 4, *p, b;                        // pointer declaration
 void quotient(int i, float d);           // function declaration
 char c;		
 
+int fun(int a){
+	// nested blocks
+	int m;
+	m = 1;
+	{
+		int n;
+		n = 2;
+		{
+			int o;
+			o = 3;
+			{
+				int p;
+				p = 4;
+				{
+					int q;
+					q = 1<2?1:2;
+				}
+			}
+		}
+	}
+}
+
 void main()
 {
 	// Variable Declaration
