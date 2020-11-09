@@ -1,8 +1,8 @@
-//This testfile checks the functioning of the library functions printi, readi and prints
+//This testfile checks the functioning of the library functions printInt, readInt and printStr
 
-int printi(int num);
-int prints(char * c);
-int readi(int *eP);
+int printInt(int num);
+int printStr(char * c);
+int readInt(int *eP);
 
 int f(int *a)
 {
@@ -16,7 +16,7 @@ int main()
     int a,b;
     int *e;
     
-    prints("***********************Some random outputs!!*************************\n");
+    printStr("***********************Some random outputs!!*************************\n");
     
     b = 3;
     e = &b;
@@ -25,21 +25,21 @@ int main()
         int a = 1;
     }
 
-    prints("Passing pointers to function f!\n");
-    prints("Value passed to function: ");
-    printi(b);
-    prints("\n");
+    printStr("Passing pointers to function f!\n");
+    printStr("Value passed to function: ");
+    printInt(b);
+    printStr("\n");
     
-    prints("Value returned from function s is: ");
-    printi(a);
-    prints("\n");
+    printStr("Value returned from function s is: ");
+    printInt(a);
+    printStr("\n");
     
-    prints("Read an integer!!");
-    prints("\n");
-    b = readi(e);
-    prints("The integer that was read is:");
-    printi(b);
-    prints("\n");
+    printStr("Read an integer!!");
+    printStr("\n");
+    b = readInt(e);
+    printStr("The integer that was read is:");
+    printInt(b);
+    printStr("\n");
     
 
     return 0;

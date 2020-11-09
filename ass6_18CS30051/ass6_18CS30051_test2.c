@@ -1,9 +1,9 @@
 //This test file extensively checks the expressions both boolean and algebraic
 //and also the funciton calling and returning process in detail
 
-int prints(char *c);
-int printi(int i);
-int readi(int *eP);
+int printStr(char *c);
+int printInt(int i);
+int readInt(int *eP);
 int a;
 int b = 1;
 char c;
@@ -13,7 +13,7 @@ int add (int a, int b) {
   int ans;
   int c = 2, d, arr[10];
   int*p;
-  prints("got into function\n");
+  printStr("got into function\n");
   ans = a+b;
   d = 2;
   if (a>=d) {
@@ -22,7 +22,7 @@ int add (int a, int b) {
   else {
     c = a+b;
   }
-  prints("returning from function\n");
+  printStr("returning from function\n");
   return ans;
 }
 int main () {
@@ -30,12 +30,12 @@ int main () {
   int*p;
   int x, y, z;
   int eP;
-  prints("Enter two numbers :\n");
-  x = readi(&eP);
-  y = readi(&eP);
+  printStr("Enter two numbers :\n");
+  x = readInt(&eP);
+  y = readInt(&eP);
   z = add(x,y);
-  prints("Sum is equal to ");
-  printi(z);
-  prints("\n");
+  printStr("Sum is equal to ");
+  printInt(z);
+  printStr("\n");
   return c;
 }

@@ -1,6 +1,6 @@
-/*prints function it inputs strings till the first whitespace or '\0'*/
+/*printStr function it inputs strings till the first whitespace or '\0'*/
 
-int prints(char *ch)
+int printStr(char *ch)
    {
       int i=0;
       for(i=0;ch[i]!='\0';i++);
@@ -13,7 +13,7 @@ int prints(char *ch)
 
 /*function to print int to STDOUT*/
 /*Done almost like the example explained in the class */
-int printi(int n){
+int printInt(int n){
 	char buff[100];
 	int i=0,j,k,bytes;
 	if (n==0) buff[i++]='0';
@@ -54,8 +54,8 @@ return bytes;
 
 
 
-/*function to print int to STDOUT*/
-int printd(float f){
+/*function to print floating point number to STDOUT*/
+int printFloat(float f){
 	char buff[100];
 	int i=0,j,count=0,k,bytes;
 	if (f==0) buff[i++]='0';
@@ -109,12 +109,12 @@ return bytes;
 
 
 /*function to read int from STDIN and return the read int*/
-int readi(int *ep) {
+int readInt(int *ep) {
 	char buff[1];
 	char n[20];
 	int num=0,len=0,i;
 	while (1) {
-	 __asm__ __volatile__ ("syscall"::"a"(0), "D"(0), "S"(buff), "d"(1));/*reading inputs one by one from STDIN to buff*/
+	 __asm__ __volatile__ ("syscall"::"a"(0), "D"(0), "S"(buff), "d"(1));/*readIntng inputs one by one from STDIN to buff*/
 		if(buff[0]=='\t'||buff[0]=='\n'||buff[0]==' ') break;/*breaks at the first encounter of whitespace*/
 		else if (((int)buff[0]-'0'>9||(int)buff[0]-'0'<0)&& buff[0]!='-') *ep=1;/*only '-' or digits are allowed, else error*/
 		else{
@@ -152,7 +152,7 @@ int readi(int *ep) {
 
 
 /*function to read floats from STDIN into *ep*/
-int readf(float *ep) {
+int readFloat(float *ep) {
 	char buff[1];
 	char n[20];
 	float num=0.0;
@@ -160,7 +160,7 @@ int readf(float *ep) {
 
 	while (1) {
 		/*inline asm commands for system call to read to "buff" till "1" length from STDIN*/
-	 __asm__ __volatile__ ("syscall"::"a"(0), "D"(0), "S"(buff), "d"(1));/*reading inputs one by one from STDIN to buff*/
+	 __asm__ __volatile__ ("syscall"::"a"(0), "D"(0), "S"(buff), "d"(1));/*readIntng inputs one by one from STDIN to buff*/
 		if(buff[0]=='\t'||buff[0]=='\n'||buff[0]==' ') break;/*breaks at the first encounter of whitespace*/
 		else if (((int)buff[0]-'0'>9||(int)buff[0]-'0'<0)&&buff[0]!='-'&&buff[0]!='.') return 1;/*only '-','.' or digits are allowed, else error*/
 		else{

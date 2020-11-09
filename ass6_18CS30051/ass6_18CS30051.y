@@ -167,8 +167,7 @@ using namespace std;
 
 %%
 
-primary_expression
-	: IDENTIFIER {
+primary_expression: IDENTIFIER {
 	$$ = new expr();
 	$$->loc = $1;
 	$$->type = "NONBOOL";
@@ -196,8 +195,7 @@ primary_expression
 	}
 	;
 
-constant
-	:INTEGER_CONSTANT {
+constant:INTEGER_CONSTANT {
 	stringstream strs;
     strs << $1;
     string temp_str = strs.str();
@@ -218,9 +216,7 @@ constant
 	}
 	;
 
-
-postfix_expression
-	:primary_expression {
+postfix_expression:primary_expression {
 		$$ = new Array ();
 		$$->Array = $1->loc;
 		$$->loc = $$->Array;
