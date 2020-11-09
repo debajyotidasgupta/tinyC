@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ass6_18CS30051_translator.h"
-#include "y.tab.h"
+#include "ass6_18CS30051.tab.h"
 %}
 
 /* Regular Expression Definitions */

@@ -295,6 +295,7 @@ expr* convertInt2Bool (expr* e) {	// Convert any expression to bool
 		e->truelist = makelist (nextinstr());
 		emit ("GOTOOP", "");
 	}
+	return e;
 }
 expr* convertBool2Int (expr* e) {	// Convert any expression to bool
 	if (e->type=="BOOL") {
@@ -310,6 +311,7 @@ expr* convertBool2Int (expr* e) {	// Convert any expression to bool
 		backpatch (e->falselist, nextinstr());
 		emit ("EQUAL", e->loc->name, "false");
 	}
+	return e;
 }
 
 void changeTable (symtable* newtable) {	// Change current symbol table
@@ -341,6 +343,7 @@ int size_type (symtype* t){
 	else if(t->type=="PTR") return POINTER_SIZE;
 	else if(t->type=="ARR") return t->width * size_type (t->ptr);
 	else if(t->type=="FUNC") return 0;
+	return -1;
 }
 
 

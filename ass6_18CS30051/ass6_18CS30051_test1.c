@@ -21,6 +21,10 @@ int main()
     b = 3;
     e = &b;
 
+    {
+        int a = 1;
+    }
+
     prints("Passing pointers to function f!\n");
     prints("Value passed to function: ");
     printi(b);

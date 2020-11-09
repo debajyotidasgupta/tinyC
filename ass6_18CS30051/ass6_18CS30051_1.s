@@ -64,7 +64,7 @@ main:
 	.cfi_offset 5, -8
 	movq 	%rsp, %rbp
 	.cfi_def_cfa_register 5
-	subq	$168, %rsp
+	subq	$172, %rsp
 
 	movq 	$.LC0, -40(%rbp)
 	movl 	-40(%rbp), %eax
@@ -79,72 +79,76 @@ main:
 	movq 	%rax, -56(%rbp)
 	movl	-56(%rbp), %eax
 	movl 	%eax, -32(%rbp)
-	movq 	$.LC1, -64(%rbp)
-	movl 	-64(%rbp), %eax
-	movq 	-64(%rbp), %rdi
+	movl	$1, %eax
+	movl 	%eax, -64(%rbp)
+	movl	-64(%rbp), %eax
+	movl 	%eax, -24(%rbp)
+	movq 	$.LC1, -68(%rbp)
+	movl 	-68(%rbp), %eax
+	movq 	-68(%rbp), %rdi
 	call	prints
-	movl	%eax, -68(%rbp)
-	movq 	$.LC2, -72(%rbp)
-	movl 	-72(%rbp), %eax
-	movq 	-72(%rbp), %rdi
+	movl	%eax, -72(%rbp)
+	movq 	$.LC2, -76(%rbp)
+	movl 	-76(%rbp), %eax
+	movq 	-76(%rbp), %rdi
 	call	prints
-	movl	%eax, -76(%rbp)
+	movl	%eax, -80(%rbp)
 	movl 	-28(%rbp), %eax
 	movq 	-28(%rbp), %rdi
 	call	printi
-	movl	%eax, -84(%rbp)
-	movq 	$.LC3, -88(%rbp)
-	movl 	-88(%rbp), %eax
-	movq 	-88(%rbp), %rdi
+	movl	%eax, -88(%rbp)
+	movq 	$.LC3, -92(%rbp)
+	movl 	-92(%rbp), %eax
+	movq 	-92(%rbp), %rdi
 	call	prints
-	movl	%eax, -92(%rbp)
-	movq 	$.LC4, -96(%rbp)
-	movl 	-96(%rbp), %eax
-	movq 	-96(%rbp), %rdi
+	movl	%eax, -96(%rbp)
+	movq 	$.LC4, -100(%rbp)
+	movl 	-100(%rbp), %eax
+	movq 	-100(%rbp), %rdi
 	call	prints
-	movl	%eax, -100(%rbp)
+	movl	%eax, -104(%rbp)
 	movl 	-24(%rbp), %eax
 	movq 	-24(%rbp), %rdi
 	call	printi
-	movl	%eax, -104(%rbp)
-	movq 	$.LC5, -108(%rbp)
-	movl 	-108(%rbp), %eax
-	movq 	-108(%rbp), %rdi
+	movl	%eax, -108(%rbp)
+	movq 	$.LC5, -112(%rbp)
+	movl 	-112(%rbp), %eax
+	movq 	-112(%rbp), %rdi
 	call	prints
-	movl	%eax, -112(%rbp)
-	movq 	$.LC6, -116(%rbp)
-	movl 	-116(%rbp), %eax
-	movq 	-116(%rbp), %rdi
+	movl	%eax, -116(%rbp)
+	movq 	$.LC6, -120(%rbp)
+	movl 	-120(%rbp), %eax
+	movq 	-120(%rbp), %rdi
 	call	prints
-	movl	%eax, -120(%rbp)
-	movq 	$.LC7, -124(%rbp)
-	movl 	-124(%rbp), %eax
-	movq 	-124(%rbp), %rdi
+	movl	%eax, -124(%rbp)
+	movq 	$.LC7, -128(%rbp)
+	movl 	-128(%rbp), %eax
+	movq 	-128(%rbp), %rdi
 	call	prints
-	movl	%eax, -128(%rbp)
+	movl	%eax, -132(%rbp)
 	movl 	-32(%rbp), %eax
 	movq 	-32(%rbp), %rdi
 	call	readi
-	movl	%eax, -136(%rbp)
-	movl	-136(%rbp), %eax
+	movl	%eax, -140(%rbp)
+	movl	-140(%rbp), %eax
 	movl 	%eax, -28(%rbp)
-	movq 	$.LC8, -144(%rbp)
-	movl 	-144(%rbp), %eax
-	movq 	-144(%rbp), %rdi
+	movq 	$.LC8, -148(%rbp)
+	movl 	-148(%rbp), %eax
+	movq 	-148(%rbp), %rdi
 	call	prints
-	movl	%eax, -148(%rbp)
+	movl	%eax, -152(%rbp)
 	movl 	-28(%rbp), %eax
 	movq 	-28(%rbp), %rdi
 	call	printi
-	movl	%eax, -152(%rbp)
-	movq 	$.LC9, -156(%rbp)
-	movl 	-156(%rbp), %eax
-	movq 	-156(%rbp), %rdi
+	movl	%eax, -156(%rbp)
+	movq 	$.LC9, -160(%rbp)
+	movl 	-160(%rbp), %eax
+	movq 	-160(%rbp), %rdi
 	call	prints
-	movl	%eax, -160(%rbp)
+	movl	%eax, -164(%rbp)
 	movl	$0, %eax
-	movl 	%eax, -164(%rbp)
-	movl	-164(%rbp), %eax
+	movl 	%eax, -168(%rbp)
+	movl	-168(%rbp), %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
