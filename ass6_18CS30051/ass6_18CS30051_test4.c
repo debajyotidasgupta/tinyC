@@ -1,53 +1,41 @@
-//test file to check basic statements, expression, readInt and printInt library 
-//functions created in assignment 2
-//also checks the recursive fibonacci function to check the function call and return methodology
-
-
 int printStr(char *c);
 int printInt(int i);
 int readInt(int *eP);
 
-
-int fib(int a){
-  printStr("\nEntered the function for i : ");
-  printInt(a);
-  int b=a-1,c,d;
-  if(b<=0) return 1;
-  else {
-    c=fib(b);
-    b=b-1;
-    d=fib(b);
-    c=c+d;
-    return c;
-  }
-  return 1;
-}
-
 int main () {
-  int a = 5, b = 2, c;
-  char ch = 'x';
-  char* str;
-  str = "Hello World\n";
-  char* str1;
-  str1 = "abcd";
-  int read;
-  read = 5;
-  int eP;
-  if (a<b) {
-    a++;
-  }
-  else {
+  printStr("\n    #######################################################\n    ##                                                   ##\n    ##      Print first N fibonacci numbers              ##\n    ##         CHECK FOR BINARY OP AND LOOP              ##\n    ##                                                   ##\n    #######################################################\n\n");
+
+
+  printStr("ENTER THE VALUE FOR N (<=45): ");
+  int i,ep;
+  i=readInt(&ep);
+  printStr("\nYOU ENTERED THE VALUE: ");
+  printInt(i);
+
+  printStr("\n\nTHE FIRST ");
+  printInt(i);
+  printStr(" FIBONACCI NUMBERS ARE :\n\n        ");
+
+  int j,a=0,b=1,c;
+
+  if(i>0) printInt(a);
+  printStr(" ");
+  if(i>1) printInt(b);
+  printStr(" ");
+
+  for(j=2;j<i;j++){
     c = a+b;
+    printInt(c);
+    printStr(" ");
+    a = b;
+    b = c;
+
+    int r=j/10;
+    if(r*10==j){
+      printStr("\n        ");
+    }
   }
-  printStr("Please enter a number for recursive fibonacci: ");
-  read = readInt(&eP);
-  printStr("You Entered ");
-  c = printInt(read);
+
   printStr("\n");
-
-  printStr("Now testting for recursive fibonacci number ....Entering the function\n");
-  int out=0;
-  out=fib(read);
-  printStr("\n\nReturned from recursive fibonacci function");
-
+  return;
 }

@@ -4,43 +4,22 @@ int printInt(int num);
 int printStr(char * c);
 int readInt(int *eP);
 
-int f(int *a)
-{
-    int b;
-    b = *a;
-    b = b + 2;
-    return b;
-}
 int main()
 {
     int a,b;
     int *e;
     
-    printStr("***********************Some random outputs!!*************************\n");
+    printStr("\n        ######################################################\n        ##                                                  ##\n        ##         Print first 10 natural numbers           ##\n        ##                   (LOOP)                         ##\n        ##                                                  ##\n        ######################################################\n\n");
     
-    b = 3;
+    b = 1;
     e = &b;
 
-    {
-        int a = 1;
+    printStr("        ");
+    for(a=0;a<10;a++){
+        printInt(b);
+        printStr(" ");
+        b = b+1;
     }
-
-    printStr("Passing pointers to function f!\n");
-    printStr("Value passed to function: ");
-    printInt(b);
-    printStr("\n");
-    
-    printStr("Value returned from function s is: ");
-    printInt(a);
-    printStr("\n");
-    
-    printStr("Read an integer!!");
-    printStr("\n");
-    b = readInt(e);
-    printStr("The integer that was read is:");
-    printInt(b);
-    printStr("\n");
-    
 
     return 0;
 }

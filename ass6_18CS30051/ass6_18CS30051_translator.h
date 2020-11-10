@@ -117,11 +117,12 @@ class sym
 class symtable
 {                                                                                  // Symbol Table class
 	public:
-		string name;                                                               // Name of Table
+		
+	string name;                                                                   // Name of Table
 	int count;                                                                     // Count of temporary variables
 	list<sym> table;                                                               // The table of symbols
 	symtable * parent;                                                             // Immediate parent of the symbol table
-	map<string, int> ar;                                                           //activation record
+	map<string, int> ar;                                                           // activation record
 	symtable(string name = "NULL");
 	sym* lookup(string name);                                                      // Lookup for a symbol in symbol table
 	void print();                                                                  // Print the symbol table

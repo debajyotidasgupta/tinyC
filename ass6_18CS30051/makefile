@@ -6,7 +6,8 @@ assembly: tinyC libass2_18CS30051.a
 	./tinyC 3 > ass6_18CS30051_quads3.out
 	./tinyC 4 > ass6_18CS30051_quads4.out
 	./tinyC 5 > ass6_18CS30051_quads5.out
-	./tinyC 6 > ass6_18CS30051_quads5.out
+	./tinyC 6 > ass6_18CS30051_quads6.out
+	./tinyC 7 > ass6_18CS30051_quads7.out
 
 	@echo "\n-------------    Generating the object files from assembly code   ---------------\n"
 
@@ -16,6 +17,7 @@ assembly: tinyC libass2_18CS30051.a
 	gcc -c ass6_18CS30051_4.s
 	gcc -c ass6_18CS30051_5.s
 	gcc -c ass6_18CS30051_6.s
+	gcc -c ass6_18CS30051_7.s
 
 	@echo "\n-------------    Compiling the test files   ---------------\n"
 
@@ -25,6 +27,7 @@ assembly: tinyC libass2_18CS30051.a
 	gcc ass6_18CS30051_4.o -o test4 -L. -lass2_18CS30051 -no-pie
 	gcc ass6_18CS30051_5.o -o test5 -L. -lass2_18CS30051 -no-pie
 	gcc ass6_18CS30051_6.o -o test6 -L. -lass2_18CS30051 -no-pie
+	gcc ass6_18CS30051_7.o -o test7 -L. -lass2_18CS30051 -no-pie
 
 	@echo "\n###########  Use ./test<i> for testing the ith file  ##########\n"
 
@@ -74,6 +77,7 @@ clean:
 	   test4\
 	   test5\
 	   test6\
+	   test7\
 	   tinyC\
 	   ass6_18CS30051_target_translator.o\
 	   ass6_18CS30051_translator.h.gch\
@@ -82,16 +86,20 @@ clean:
 	   ass6_18CS30051_quads3.out\
 	   ass6_18CS30051_quads4.out\
 	   ass6_18CS30051_quads5.out\
+	   ass6_18CS30051_quads6.out\
+	   ass6_18CS30051_quads7.out\
 	   libass2_18CS30051.a\
-	   ass6_18CS30051_1.o\
 	   ass2_18CS30051.o\
+	   ass6_18CS30051_1.o\
 	   ass6_18CS30051_2.o\
 	   ass6_18CS30051_3.o\
 	   ass6_18CS30051_4.o\
 	   ass6_18CS30051_5.o\
 	   ass6_18CS30051_6.o\
+	   ass6_18CS30051_7.o\
 	   ass6_18CS30051_2.s\
 	   ass6_18CS30051_3.s\
 	   ass6_18CS30051_4.s\
 	   ass6_18CS30051_5.s\
-	   ass6_18CS30051_6.s
+	   ass6_18CS30051_6.s\
+	   ass6_18CS30051_7.s
