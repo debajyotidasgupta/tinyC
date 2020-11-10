@@ -97,6 +97,7 @@ clean:
 	   ass6_18CS30051_5.o\
 	   ass6_18CS30051_6.o\
 	   ass6_18CS30051_7.o\
+	   ass6_18CS30051_1.s\
 	   ass6_18CS30051_2.s\
 	   ass6_18CS30051_3.s\
 	   ass6_18CS30051_4.s\
