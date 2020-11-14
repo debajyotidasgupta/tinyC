@@ -13,7 +13,7 @@ int add (int a, int b) {
   int ans;
   int c = 2, d, arr[10];
   int*p;
-  printStr("got into function\n");
+  printStr("    ==== Entered into the function ====\n");
   ans = a+b;
   d = 2;
   if (a>=d) {
@@ -22,7 +22,7 @@ int add (int a, int b) {
   else {
     c = a+b;
   }
-  printStr("returning from function\n");
+  printStr("    ==== Returning from function   ====\n");
   return ans;
 }
 int main () {
@@ -30,11 +30,15 @@ int main () {
   int*p;
   int x, y, z;
   int eP;
-  printStr("Enter two numbers :\n");
+  printStr("\n    ####################################################\n    ##                                                ##\n    ##           Tracing function steps               ##\n    ##      Adding two numbers in a Function          ##\n    ##                                                ##\n    ####################################################\n    \n\n");
+  printStr("\n    Enter two numbers :\n");
+  printStr("\n    Enter first numbers  : ");
   x = readInt(&eP);
+  printStr("    Enter second numbers : ");
   y = readInt(&eP);
+  printStr("\n    ==== Passing to the function   ====\n");
   z = add(x,y);
-  printStr("Sum is equal to ");
+  printStr("\n    Sum is equal to : ");
   printInt(z);
   printStr("\n");
   return c;

@@ -1,21 +1,31 @@
 int printStr(char *c);
+int readInt(int *ep);
 int printInt(int i);
 
-int inc(int a,int b){
-  printStr("\n\nEntered the function \n");
-  b=b+5+a;
-  printStr("Value to be returned is : ");
-  printInt(b);
-  return b;
+int pow(int a,int b){
+  int ans;
+  if(b==0)ans = 1;
+  else if(b==1)ans = a;
+  else ans = a*pow(a,b-1);
+  return ans;
 }
 
 int main() {
-  int i,j=10;
-  i=1;
-  printStr("Entering the function inc... \n");
-  j=inc(i,j);
-  printStr("\n\nThe value returned from the function is \n");
+  int i,j=5,c;
+  int *b = &c;
+  printStr("      ##########################################\n      ##                                      ##\n      ##         Recursive Function           ##\n      ##          POWER FUNCTION              ##\n      ##                                      ##\n      ##########################################\n      \n");
+  
+  printStr("      Enter the BASE     : ");
+  i = readInt(b);
+  printStr("      Enter the EXPONENT : ");
+  j = readInt(b);
+  c=pow(i,j);
+  printStr("\n\n      The value of ");
+  printInt(i);
+  printStr("^");
   printInt(j);
+  printStr(" is : ");
+  printInt(c);
   printStr("\n");
   return 0;
 }
